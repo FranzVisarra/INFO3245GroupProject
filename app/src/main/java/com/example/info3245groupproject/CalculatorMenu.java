@@ -113,32 +113,32 @@ public class CalculatorMenu extends AppCompatActivity {
                             //set end position
                             endPos = i;
                             //get stuff between brackets
-                            for (int n = groupStartPos + 1; n < i; n++) {
+                            for (int n = upStartPos + 1; n < i; n++) {
                                 formula.add(temp.get(n));
                             }
                             //remove the brackets and everything inbetween
-                            for (int n = groupStartPos; n <= endPos; n++){
+                            for (int n = upStartPos; n <= endPos; n++){
                                 temp.remove(n);
                             }
                             //run it back to do stuff between
                             //add new result
-                            temp.add(groupStartPos, ShortenFormula(formula, "roundUp").get(0));
+                            temp.add(upStartPos, ShortenFormula(formula, "roundUp").get(0));
                             break;
                         }
                         else if (temp.get(i).equals("}")) {
                             //set end position
                             endPos = i;
                             //get stuff between brackets
-                            for (int n = groupStartPos + 1; n < i; n++) {
+                            for (int n = downStartPos + 1; n < i; n++) {
                                 formula.add(temp.get(n));
                             }
                             //remove the brackets and everything inbetween
-                            for (int n = groupStartPos; n <= endPos; n++){
+                            for (int n = downStartPos; n <= endPos; n++){
                                 temp.remove(n);
                             }
                             //run it back to do stuff between
                             //add new result
-                            temp.add(groupStartPos, ShortenFormula(formula, "roundDown").get(0));
+                            temp.add(downStartPos, ShortenFormula(formula, "roundDown").get(0));
                             break;
                         }
                     }
