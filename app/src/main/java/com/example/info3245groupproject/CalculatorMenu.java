@@ -1,7 +1,5 @@
 package com.example.info3245groupproject;
 
-import static android.util.Half.toFloat;
-
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -12,7 +10,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class CalculatorMenu extends AppCompatActivity {
 
@@ -79,67 +76,69 @@ public class CalculatorMenu extends AppCompatActivity {
                     int groupStartPos = 0;
                     int upStartPos = 0;
                     int downStartPos = 0;
-                    int endPos = 0;
+                    int endPos;
+                    label:
                     for (int i = 0; i < temp.size(); i++) {
-                        if (temp.get(i).equals("(")) {
-                            //always gets last start bracket
-                            groupStartPos = i;
+                        switch (temp.get(i)) {
+                            case "(":
+                                //always gets last start bracket
+                                groupStartPos = i;
+                                break;
+                            case "[":
+                                //always gets last start bracket
+                                upStartPos = i;
+                                break;
+                            case "{":
+                                //always gets last start bracket
+                                downStartPos = i;
+                                break;
                         }
-                        else if (temp.get(i).equals("[")) {
-                            //always gets last start bracket
-                            upStartPos = i;
-                        }
-                        else if (temp.get(i).equals("{")) {
-                            //always gets last start bracket
-                            downStartPos = i;
-                        }
-                        if (temp.get(i).equals(")")) {
-                            //set end position
-                            endPos = i;
-                            //get stuff between brackets
-                            for (int n = groupStartPos + 1; n < i; n++) {
-                                formula.add(temp.get(n));
-                            }
-                            //remove the brackets and everything inbetween
-                            for (int n = groupStartPos; n <= endPos; n++){
-                                temp.remove(n);
-                            }
-                            //run it back to do stuff between
-                            //add new result
-                            temp.add(groupStartPos, ShortenFormula(formula, "search").get(0));
-                            break;
-                        }
-                        else if (temp.get(i).equals("]")) {
-                            //set end position
-                            endPos = i;
-                            //get stuff between brackets
-                            for (int n = upStartPos + 1; n < i; n++) {
-                                formula.add(temp.get(n));
-                            }
-                            //remove the brackets and everything inbetween
-                            for (int n = upStartPos; n <= endPos; n++){
-                                temp.remove(n);
-                            }
-                            //run it back to do stuff between
-                            //add new result
-                            temp.add(upStartPos, ShortenFormula(formula, "roundUp").get(0));
-                            break;
-                        }
-                        else if (temp.get(i).equals("}")) {
-                            //set end position
-                            endPos = i;
-                            //get stuff between brackets
-                            for (int n = downStartPos + 1; n < i; n++) {
-                                formula.add(temp.get(n));
-                            }
-                            //remove the brackets and everything inbetween
-                            for (int n = downStartPos; n <= endPos; n++){
-                                temp.remove(n);
-                            }
-                            //run it back to do stuff between
-                            //add new result
-                            temp.add(downStartPos, ShortenFormula(formula, "roundDown").get(0));
-                            break;
+                        switch (temp.get(i)) {
+                            case ")":
+                                //set end position
+                                endPos = i;
+                                //get stuff between brackets
+                                for (int n = groupStartPos + 1; n < i; n++) {
+                                    formula.add(temp.get(n));
+                                }
+                                //remove the brackets and everything inbetween
+                                for (int n = groupStartPos; n <= endPos; n++) {
+                                    temp.remove(n);
+                                }
+                                //run it back to do stuff between
+                                //add new result
+                                temp.add(groupStartPos, ShortenFormula(formula, "search").get(0));
+                                break label;
+                            case "]":
+                                //set end position
+                                endPos = i;
+                                //get stuff between brackets
+                                for (int n = upStartPos + 1; n < i; n++) {
+                                    formula.add(temp.get(n));
+                                }
+                                //remove the brackets and everything inbetween
+                                for (int n = upStartPos; n <= endPos; n++) {
+                                    temp.remove(n);
+                                }
+                                //run it back to do stuff between
+                                //add new result
+                                temp.add(upStartPos, ShortenFormula(formula, "roundUp").get(0));
+                                break label;
+                            case "}":
+                                //set end position
+                                endPos = i;
+                                //get stuff between brackets
+                                for (int n = downStartPos + 1; n < i; n++) {
+                                    formula.add(temp.get(n));
+                                }
+                                //remove the brackets and everything inbetween
+                                for (int n = downStartPos; n <= endPos; n++) {
+                                    temp.remove(n);
+                                }
+                                //run it back to do stuff between
+                                //add new result
+                                temp.add(downStartPos, ShortenFormula(formula, "roundDown").get(0));
+                                break label;
                         }
                     }
                     //run it again
