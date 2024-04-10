@@ -1,6 +1,10 @@
 package com.example.info3245groupproject;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,11 +13,19 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
 
 public class CalculatorMenu extends AppCompatActivity {
 
     //private static Pattern alpha ;
+    public String thisValue;
+    public Dictionary<String, Float> varDict;
+    List<String> listItems = new ArrayList<String>();
+    ListView variables;
+    ArrayAdapter<String> list;
+    List<String> curForm;//the current formula on the screen, represented as a list
+    int listIndex;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +37,19 @@ public class CalculatorMenu extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        listIndex = 0;
+        variables = findViewById(R.id.variables);
+        list = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+        variables.setAdapter(list);
+        variables.setClickable(true);
+        variables.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO add variable to text on screen
+
+            }
+        });
+
     }
 
     public void ParseFormula(String form)
@@ -79,7 +104,6 @@ public class CalculatorMenu extends AppCompatActivity {
                     int upStartPos = 0;
                     int downStartPos = 0;
                     int endPos;
-                    label:
                     for (int i = 0; i < temp.size(); i++) {
                         switch (temp.get(i)) {
                             case "(":
@@ -110,7 +134,7 @@ public class CalculatorMenu extends AppCompatActivity {
                                 //run it back to do stuff between
                                 //add new result
                                 temp.add(groupStartPos, ShortenFormula(formula, "search").get(0));
-                                break label;
+                                break;
                             case "]":
                                 //set end position
                                 endPos = i;
@@ -125,7 +149,7 @@ public class CalculatorMenu extends AppCompatActivity {
                                 //run it back to do stuff between
                                 //add new result
                                 temp.add(upStartPos, ShortenFormula(formula, "roundUp").get(0));
-                                break label;
+                                break;
                             case "}":
                                 //set end position
                                 endPos = i;
@@ -140,7 +164,7 @@ public class CalculatorMenu extends AppCompatActivity {
                                 //run it back to do stuff between
                                 //add new result
                                 temp.add(downStartPos, ShortenFormula(formula, "roundDown").get(0));
-                                break label;
+                                break;
                         }
                     }
                     //run it again
@@ -201,14 +225,23 @@ public class CalculatorMenu extends AppCompatActivity {
                 }
                 return formula;
             case "calculate"://this method will always have 3 parts
-                //check if number format
+                //turn variables into the numbers they represent
+                if (!temp.get(0).matches("\\d+(?:\\.\\d+)?")){
+                    temp.set(0, String.valueOf(varDict.get(temp.get(0))));
+                }
+                if (!temp.get(2).matches("\\d+(?:\\.\\d+)?")){
+                    temp.set(2, String.valueOf(varDict.get(temp.get(2))));
+                }
+                /*this stays here in case we ever make it so input can be invalid
                 if (!temp.get(0).matches("\\d+(?:\\.\\d+)?") ||
                     !temp.get(2).matches("\\d+(?:\\.\\d+)?")){
                     //TODO check for variables then substitute them on an if else
+                    varDict.get(temp.get(0));
                     //add brackets to the string if it cannot be separated into the calculation
                     formula.add("("+temp.get(0)+temp.get(1)+temp.get(2)+")");
                     return formula;
                 }
+                 */
                 switch(temp.get(1)){
                     case "/":
                         calc = Float.parseFloat(temp.get(0))/Float.parseFloat(temp.get(2));
@@ -232,4 +265,54 @@ public class CalculatorMenu extends AppCompatActivity {
         //nothing found so its in its most simplistic state
         return temp;
     }
+
+    private Runnable CheckInput = new Runnable() {
+        @Override
+        public void run() {
+            List<String> testList = curForm;
+            int bracket=0;
+            int roundUp=0;
+            int roundDown=0;
+            boolean preOp = false;//is the last checked cell an operator
+            for (int i = 0; i < testList.size();i++){
+                switch (testList.get(i)){
+                    case "(":
+                        bracket++;
+                        break;
+                    case ")":
+                        bracket--;
+                        break;
+                    case "[":
+                        roundUp++;
+                        break;
+                    case "]":
+                        roundUp--;
+                        break;
+                    case "{":
+                        roundDown++;
+                        break;
+                    case "}":
+                        roundDown--;
+                        break;
+                    case "/":
+                    case "*":
+                    case "+":
+                    case "-":
+                        if (preOp){
+                            preOp = true;
+                        } else {
+                            //TODO warn user they wrong because you shouldn't have duplicate operators e.x. ++ -- /+
+                        }
+                        break;
+                }
+            }
+            //TODO warn user they wrong because you shouldn't have an open bracket without a close
+            if(bracket!=0){
+            }
+            if(roundUp!=0){
+            }
+            if(roundDown!=0){
+            }
+        }
+    };
 }

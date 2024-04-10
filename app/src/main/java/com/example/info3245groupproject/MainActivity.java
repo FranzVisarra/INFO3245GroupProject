@@ -1,11 +1,8 @@
 package com.example.info3245groupproject;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -13,24 +10,21 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.ListAdapter;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    List<String> strings = new ArrayList<String>();
+    List<String> listItems = new ArrayList<String>();
     ListView files;
     ArrayAdapter<String> list;
     public File root;
@@ -47,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
         });
         Dialog dialog = new Dialog(MainActivity.this);
         //default add button
-        strings.add("ADD NEW");
+        listItems.add("ADD NEW");
 
         files = findViewById(R.id.ListView1);
-        list = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,strings);
+        list = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
         files.setAdapter(list);
         files.setClickable(true);
         files.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -74,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                                     try {
                                         File file = new File(root + "/"+input+".txt");
                                         file.createNewFile();
-                                        strings.add(input);
+                                        listItems.add(input);
                                         list.notifyDataSetChanged();
                                         System.out.println(input);
                                     } catch (IOException e) {
@@ -132,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             }
             for(File f : root.listFiles()){
                 //TODO add filenames to list
-                strings.add(f.getName());
+                listItems.add(f.getName());
                 System.out.println(f.getName());
             }
         }
