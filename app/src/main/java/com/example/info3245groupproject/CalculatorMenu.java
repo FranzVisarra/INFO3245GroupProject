@@ -18,7 +18,7 @@ public class CalculatorMenu extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.game_menu);
+        setContentView(R.layout.calculator_menu);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -31,8 +31,10 @@ public class CalculatorMenu extends AppCompatActivity {
     {
         List<String> formList;
         formList = StringToList(form);
+        //TODO make string get sent to file
         //this is result
         ShortenFormula(formList,"search");
+
     }
     public List<String> StringToList(String form){
         List<String> formList = new ArrayList<>();
