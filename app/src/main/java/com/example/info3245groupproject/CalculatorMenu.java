@@ -105,6 +105,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         //get value
         thisValue = getIntent().getStringExtra("this value");
         listIndex = 0;
@@ -160,7 +161,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
         } else if (id == R.id.zero || id == R.id.one || id == R.id.two || id == R.id.three ||
                 id == R.id.four || id == R.id.five || id == R.id.six || id == R.id.seven ||
                 id == R.id.eight || id == R.id.nine || id == R.id.decimal) {
-            // Handle number and decimal button presses
+            //TODO Handle number and decimal button presses
             Button b = (Button) v;
             curForm.add(b.getText().toString());
         } else {

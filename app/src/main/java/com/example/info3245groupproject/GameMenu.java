@@ -1,5 +1,6 @@
 package com.example.info3245groupproject;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -42,7 +44,7 @@ public class GameMenu extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        Dialog dialog = new Dialog(GameMenu.this);
         statValues.add("ADD NEW");
         listView = findViewById(R.id.ListView2);
         stats = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,statValues);
@@ -55,23 +57,55 @@ public class GameMenu extends AppCompatActivity {
                 switch (selectedFromList){
                     case "ADD NEW":
                         //TODO switch to calculator intent
-                        Intent intent=new Intent(GameMenu.this, CalculatorMenu.class);
-                        startActivities(new Intent[]{intent});
+                        Intent newIntent = new Intent(view.getContext(), CalculatorMenu.class);
+                        newIntent.putExtra("mode", "add");
+                        startActivity(new Intent(newIntent));
                         Toast.makeText(getApplicationContext(), "Add New clicked", Toast.LENGTH_SHORT).show();
                         System.out.println(selectedFromList);
                         break;
+                        /*
                     case "Game1":
-                        //TODO open next activity with file name
                         Intent intent1=new Intent(GameMenu.this, Game1.class);
                         startActivities(new Intent[]{intent1});
                         Toast.makeText(getApplicationContext(), "Game1 clicked", Toast.LENGTH_SHORT).show();
                         System.out.println(selectedFromList);
                         break;
+                         */
                     default:
-                        Toast.makeText(getApplicationContext(), "No action for selected item: " + selectedFromList, Toast.LENGTH_SHORT).show();
+                        //TODO open next activity with file name there is a reason this stuff is in default
+                        editStatValue(view, dialog, selectedFromList);
                         break;
-
                 }
+            }
+        });
+    }
+
+    private void editStatValue(View view, Dialog dialog, String selectedFromList){
+        dialog.setContentView(R.layout.edit_stat_popup_menu);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Button edit = dialog.findViewById(R.id.btnEditStat);
+        EditText editName = dialog.findViewById(R.id.editTextEditStatName);
+        EditText editBaseValue = dialog.findViewById(R.id.editTextEditStatBaseValue);
+        dialog.show();
+        edit.setOnClickListener(v -> {
+            String newName = editName.getText().toString();
+            String newBaseValue = editName.getText().toString();
+            if(newBaseValue.matches("\\d+(?:\\.\\d+)?")){
+                Intent EditIntent = new Intent(view.getContext(), CalculatorMenu.class);
+                String[] splitStat = selectedFromList.split(",");
+                //mode is sent so calculator can do different things
+                EditIntent.putExtra("mode", "edit");
+                EditIntent.putExtra("name", splitStat[0]);
+                EditIntent.putExtra("base value", splitStat[1]);
+                //EditIntent.putExtra("edited value", splitted[2]);
+                EditIntent.putExtra("formula", splitStat[3]);
+                String[] splitParent = splitStat[4].split("|");
+                EditIntent.putExtra("parent", splitParent);
+                String[] splitChild = splitStat[5].split("|");
+                EditIntent.putExtra("child", splitChild);
+                startActivity(new Intent(EditIntent));
+            } else{
+                Toast.makeText(GameMenu.this, "whoops, not a number", Toast.LENGTH_SHORT).show();
             }
         });
     }
