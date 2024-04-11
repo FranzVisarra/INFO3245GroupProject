@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,26 +54,18 @@ public class GameMenu extends AppCompatActivity {
                 String selectedFromList = listView.getItemAtPosition(position).toString();
                 switch (selectedFromList){
                     case "ADD NEW":
-                        //TODO switch to calculator with data
+                        //TODO switch to calculator intent
+                        Intent intent=new Intent(GameMenu.this, CalculatorMenu.class);
+                        startActivities(new Intent[]{intent});
+                        Toast.makeText(getApplicationContext(), "Add New clicked", Toast.LENGTH_SHORT).show();
                         System.out.println(selectedFromList);
-                        //String tempString = pars
-                        Intent NewIntent=new Intent(view.getContext(), CalculatorMenu.class);
-                        NewIntent.putExtra("this name", selectedFromList);
-                        //TODO make get in other thing
                         break;
                     default:
                         //TODO open next activity with file name
+                        Intent intent=new Intent(GameMenu.this, Game1.class);
+                        startActivities(new Intent[]{intent});
+                        Toast.makeText(getApplicationContext(), "Game1 clicked", Toast.LENGTH_SHORT).show();
                         System.out.println(selectedFromList);
-                        //String tempString = pars
-                        Intent EditIntent=new Intent(view.getContext(), CalculatorMenu.class);
-                        //split string with character
-                        String[] splitted = selectedFromList.split(",");
-                        EditIntent.putExtra("name", splitted[0]);
-                        EditIntent.putExtra("base value", splitted[1]);
-                        EditIntent.putExtra("edited value", splitted[2]);
-                        EditIntent.putExtra("formula", splitted[3]);
-                        EditIntent.putExtra("parent", splitted[4]);
-                        EditIntent.putExtra("child", splitted[5]);
                         break;
                 }
             }
