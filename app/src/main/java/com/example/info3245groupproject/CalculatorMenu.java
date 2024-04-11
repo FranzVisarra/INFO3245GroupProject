@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 public class CalculatorMenu extends AppCompatActivity implements View.OnClickListener {
 
+    // only for test
     //private static Pattern alpha ;
     public String thisValue;
     public Dictionary<String, Float> varDict;
