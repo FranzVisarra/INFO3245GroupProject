@@ -16,8 +16,14 @@
         android:theme="@style/Theme.INFO3245GroupProject"
         tools:targetApi="31">
         <activity
+            android:name=".GameMenu"
+            android:exported="false" />
+        <activity
+            android:name=".CalculatorMenu"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".Game1"
             android:exported="false" />

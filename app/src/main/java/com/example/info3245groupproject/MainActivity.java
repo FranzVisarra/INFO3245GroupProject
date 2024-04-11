@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             if ("ADD NEW".equals(selectedFromList)) {
                 handleAddNewFile(dialog);
             } else {
-                Intent detailIntent = new Intent(MainActivity.this, Game1.class);
+                Intent detailIntent = new Intent(MainActivity.this, GameMenu.class);
                 detailIntent.putExtra("fileName", selectedFromList);
                 startActivity(detailIntent);
             }
