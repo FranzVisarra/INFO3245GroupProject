@@ -130,6 +130,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
         int id = v.getId();  // Get the ID of the clicked view
 
         if (id == R.id.Calculate) {
+            // TODO check the calculation process
             // Handle the Calculate button: perform calculation
             String formula = curForm.stream().collect(Collectors.joining());
             ParseFormula(formula);
@@ -158,19 +159,33 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
             curForm.add("{");
         } else if (id == R.id.RoundDownEnd) {
             curForm.add("}");
-        } else if (id == R.id.zero || id == R.id.one || id == R.id.two || id == R.id.three ||
-                id == R.id.four || id == R.id.five || id == R.id.six || id == R.id.seven ||
-                id == R.id.eight || id == R.id.nine || id == R.id.decimal) {
-            //TODO Handle number and decimal button presses
-            Button b = (Button) v;
-            curForm.add(b.getText().toString());
+        } else if (id == R.id.zero) {
+            curForm.add("0");
+        } else if (id == R.id.one) {
+            curForm.add("1");
+        } else if (id == R.id.two) {
+            curForm.add("2");
+        } else if (id == R.id.three) {
+            curForm.add("3");
+        } else if (id == R.id.four) {
+            curForm.add("4");
+        } else if (id == R.id.five) {
+            curForm.add("5");
+        } else if (id == R.id.six) {
+            curForm.add("6");
+        } else if (id == R.id.seven) {
+            curForm.add("7");
+        } else if (id == R.id.eight) {
+            curForm.add("8");
+        } else if (id == R.id.nine) {
+            curForm.add("9");
+        } else if (id == R.id.decimal) {
+            curForm.add(".");
         } else {
-            // Handle any other unclassified button presses
-            Button b = (Button) v;
-            curForm.add(b.getText().toString());
+            // TODO should do nothing cause there shouldnt be any other click
         }
 
-        // Always update the display after modifying curForm
+        // update the display after modifying curForm
         updateDisplay();
     }
 
