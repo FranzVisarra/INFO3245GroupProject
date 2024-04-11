@@ -19,15 +19,19 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class GameMenu extends AppCompatActivity {
@@ -37,6 +41,7 @@ public class GameMenu extends AppCompatActivity {
     ArrayAdapter<String> stats;
     List<String> statValues = new ArrayList<String>();
     public String mode;
+    public List<String> lines;//the lines that are in the file
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -123,92 +128,159 @@ public class GameMenu extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         Thread getFiles = new Thread(GetFiles);
+        Thread setFiles = new Thread(SetFiles);
         getFiles.start();
 
         mode = getIntent().getStringExtra("mode");
         String[] tempParent;
         String[] tempChild;
+        String tempString = null;
         String tempParentString = null;
-        String tempChildString = null;
+        String temp = null;
         switch (mode){
             case "none":
                 //Literally nothing. like you came from the main screen
                 break;
             case "edit"://when you edit a value
-                //TODO find stat by name reference then proceed to edit that line
-                List<String> recievedEdited = new ArrayList<String>();
-                recievedEdited.add(getIntent().getStringExtra("name")+"|");
-                recievedEdited.add(getIntent().getStringExtra("base value")+"|");
-                recievedEdited.add(getIntent().getStringExtra("edited value")+"|");
-                recievedEdited.add(getIntent().getStringExtra("formula")+"|");
+                List<String> receivedEdited = new ArrayList<String>();
+                String receivedEditedName = getIntent().getStringExtra("name");
+                receivedEdited.add(receivedEditedName+"|");
+                receivedEdited.add(getIntent().getStringExtra("base value")+"|");
+                receivedEdited.add(getIntent().getStringExtra("edited value")+"|");
+                receivedEdited.add(getIntent().getStringExtra("formula")+"|");
                 tempParent = getIntent().getStringArrayExtra("parent");
+                //clear child associations
+                for(int n = 0; n < lines.size(); n++){
+                    String[] test = lines.get(n).split("|");
+                    //clear child
+                    test[5] = "";
+                }
                 //TODO what if length empty
+                //add parent association to this string from recieved array from file
                 for (int i = 0; i < tempParent.length; i++){
                     if (i !=0){
                         tempParentString += tempParent[i]+",";
                     }else{
                         tempParentString = tempParent[i];
                     }
-                    //TODO parent stuff specifically search through and get
                 }
-                recievedEdited.add(tempParentString+"|");
-                tempChild = getIntent().getStringArrayExtra("parent");
-                //TODO what if length empty
-                for (int i = 0; i < tempChild.length; i++){
-                    if (i !=0){
-                        tempChildString += tempChild[i]+",";
-                    }else{
-                        tempChildString = tempChild[i];
+                //add parent to received list
+                receivedEdited.add(tempParentString+"|");
+                //add all of it to a string to be done
+                for(String what : receivedEdited){
+                    temp+=receivedEdited;
+                }
+                //search through list for entry
+                for(int i = 0; i < lines.size();i++){
+                    String[] test = lines.get(i).split("|");
+                    //append entry
+                    if (test[0].equals(receivedEditedName)){
+                        //set it
+                        lines.set(i,temp);
+                        break;
                     }
-                    //TODO child stuff
                 }
-                recievedEdited.add(tempChildString);
-            case "create"://when you create a value
+                //set children in everything
+                //TODO check if lines has 0 size
+                for(int i = 0; i< lines.size(); i++){
+                    //split line into parts
+                    String[] test = lines.get(i).split("|");
+                    //split parent part into individual
+                    String[] parent = test[4].split(",");
+                    //loop through each individual parent call
+                    for (int n = 0; n <= parent.length; n++){
+                        //loop through each line for the purpose of checking if parent equals line name
+                        for(int d = 0; d< lines.size(); d++){
+                            //split current line
+                            String[] tms = lines.get(i).split("|");
+                            //check if name equals parent ref
+                            if (tms[0].equals(parent[n])){
+                                //check if child reference is empty
+                                if (lines.get(i).charAt(lines.get(i).length()-1) == '|'){
+                                    //make this first parent reference
+                                    lines.set(i,lines.get(i)+test[0]);
+                                }else{
+                                    //append original line name to end of line;
+                                    lines.set(i,lines.get(i)+","+test[0]);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+                //set values
+                for (String line: lines){
+                    String[] formula = line.split("|");
+                    //todo calculation with formula[3]
+                }
+                //set file
+                setFiles.start();
+            case "create"://when you create a stat
                 //TODO write new stat to file
                 List<String> recieved = new ArrayList<String>();
-                recieved.add(getIntent().getStringExtra("name")+"|");
+                String receivedName = getIntent().getStringExtra("name");
                 recieved.add(getIntent().getStringExtra("base value")+"|");
                 recieved.add(getIntent().getStringExtra("edited value")+"|");
                 recieved.add(getIntent().getStringExtra("formula")+"|");
                 tempParent = getIntent().getStringArrayExtra("parent");
+                //clear child associations
+                for(int n = 0; n < lines.size(); n++){
+                    String[] test = lines.get(n).split("|");
+                    //clear child
+                    test[5] = "";
+                }
                 //TODO what if length empty
+                //add parent association to this string from recieved array from file
                 for (int i = 0; i < tempParent.length; i++){
                     if (i !=0){
                         tempParentString += tempParent[i]+",";
                     }else{
                         tempParentString = tempParent[i];
                     }
-                    //TODO parent stuff specifically search through and get
                 }
+                //add parent to received list
                 recieved.add(tempParentString+"|");
-                tempChild = getIntent().getStringArrayExtra("parent");
-                //TODO what if length empty
-                for (int i = 0; i < tempChild.length; i++){
-                    if (i !=0){
-                        tempChildString += tempChild[i]+",";
-                    }else{
-                        tempChildString = tempChild[i];
+                //add all of it to a string to be done
+                for(String what : recieved){
+                    temp+=recieved;
+                }
+                //add all to list
+                lines.add(temp);
+                //set children in everything
+                //TODO check if lines has 0 size
+                for(int i = 0; i< lines.size(); i++){
+                    //split line into parts
+                    String[] test = lines.get(i).split("|");
+                    //split parent part into individual
+                    String[] parent = test[4].split(",");
+                    //loop through each individual parent call
+                    for (int n = 0; n <= parent.length; n++){
+                        //loop through each line for the purpose of checking if parent equals line name
+                        for(int d = 0; d< lines.size(); d++){
+                            //split current line
+                            String[] tms = lines.get(i).split("|");
+                            //check if name equals parent ref
+                            if (tms[0].equals(parent[n])){
+                                //check if child reference is empty
+                                if (lines.get(i).charAt(lines.get(i).length()-1) == '|'){
+                                    //make this first parent reference
+                                    lines.set(i,lines.get(i)+test[0]);
+                                }else{
+                                    //append original line name to end of line;
+                                    lines.set(i,lines.get(i)+","+test[0]);
+                                }
+                                break;
+                            }
+                        }
                     }
-                    //TODO child stuff
                 }
-                recieved.add(tempChildString);
-                //append end of file
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(root);
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
+                //set values
+                for (String line: lines){
+                    String[] formula = line.split("|");
+                    //todo calculation with formula[3]
                 }
-                OutputStreamWriter osw = new OutputStreamWriter(fos);
-                try {
-                    osw.write(tempParentString);
-                    osw.flush();
-                    osw.close();
-                    fos.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
+                //set file
+                setFiles.start();
                 break;
         }
     }
@@ -218,8 +290,11 @@ public class GameMenu extends AppCompatActivity {
         public void run() {
             root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS+"/StatCalcfiles/"+fileName);
             try(Scanner s = new Scanner(new FileReader(root))) {
+                int i = 0;
                 while(s.hasNext()){
-                    stats.add(s.nextLine());
+                    lines.add(s.nextLine());
+                    stats.add(lines.get(i));
+                    i++;
                 }
             }
             catch (IOException e){
@@ -227,4 +302,33 @@ public class GameMenu extends AppCompatActivity {
             }
         }
     };
+    private Runnable SetFiles = new Runnable() {
+        @Override
+        public void run() {
+            root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS+"/StatCalcfiles/"+fileName);
+            try {
+                FileWriter fileOut = new FileWriter(root);
+                fileOut = new FileWriter(root, true);
+                BufferedWriter buff = new BufferedWriter(fileOut);
+                PrintWriter print = new PrintWriter(buff);
+                for (String line : lines){
+                    if (Objects.equals(line, lines.get(lines.size()-1))){
+                        //print line
+                        print.print(line);
+                    }else{
+                        //add space after this line
+                        print.println(line);
+                    }
+                }
+                print.flush();
+                print.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            Thread getFiles = new Thread(GetFiles);
+            getFiles.start();
+        }
+    };
+
 }
