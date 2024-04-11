@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
@@ -26,6 +27,28 @@ public class CalculatorMenu extends AppCompatActivity {
     ArrayAdapter<String> list;
     List<String> curForm;//the current formula on the screen, represented as a list
     int listIndex;
+
+
+    // all the button
+    Button ButtonOne = findViewById(R.id.one);
+    Button ButtonTwo = findViewById(R.id.two);
+    Button ButtonThree = findViewById(R.id.three);
+    Button ButtonFour = findViewById(R.id.four);
+    Button ButtonFive = findViewById(R.id.five);
+    Button ButtonSix = findViewById(R.id.six);
+    Button ButtonSeven = findViewById(R.id.seven);
+    Button ButtonEight = findViewById(R.id.eight);
+    Button ButtonNine = findViewById(R.id.nine);
+    Button ButtonDecimal = findViewById(R.id.decimal);
+    Button ButtonLeft = findViewById(R.id.left);
+    Button ButtonRight = findViewById(R.id.right);
+    Button ButtonBracketStart = findViewById(R.id.bracketStart);
+    Button ButtonBracketEnd = findViewById(R.id.bracketEnd);
+    Button ButtonRoundUpStart = findViewById(R.id.RoundUpStart);
+    Button ButtonRoundUpEnd = findViewById(R.id.RoundUpEnd);
+    Button ButtonRoundDownStart = findViewById(R.id.RoundDownStart);
+    Button ButtonRoundDownEnd = findViewById(R.id.RoundDownEnd);
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
