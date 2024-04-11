@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -511,11 +512,18 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
                     case "+":
                     case "-":
                         if (preOp){
-                            preOp = true;
-                        } else {
-                            //TODO warn user they wrong because you shouldn't have duplicate operators e.x. ++ -- /+
+
+                            runOnUiThread(() -> Toast.makeText(CalculatorMenu.this, "Error: Consecutive operators are not allowed.", Toast.LENGTH_LONG).show());
                         }
+                            preOp = true;
+                            break;
+                            //TODO warn user they wrong because you shouldn't have duplicate operators e.x. ++ -- /+
+
+                    default:
+                        preOp = false;
                         break;
+                }
+
                 }
             }
             //TODO warn user they wrong because you shouldn't have an open bracket without a close
