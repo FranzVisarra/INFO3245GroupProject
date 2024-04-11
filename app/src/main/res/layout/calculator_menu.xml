@@ -111,12 +111,6 @@
                     android:layout_height="match_parent" >
 
                     <Button
-                        android:id="@+id/decimal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="." />
-
-                    <Button
                         android:id="@+id/left"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -127,6 +121,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=">" />
+
+                    <Button
+                        android:id="@+id/zero"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0" />
+
                 </TableRow>
 
                 <TableRow
@@ -144,6 +145,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=")" />
+
+                    <Button
+                        android:id="@+id/plus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+" />
+
                 </TableRow>
 
                 <TableRow
@@ -161,6 +169,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="]" />
+
+                    <Button
+                        android:id="@+id/minus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-" />
+
                 </TableRow>
 
                 <TableRow
@@ -178,6 +193,31 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="}" />
+
+                    <Button
+                        android:id="@+id/times"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="X" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/decimal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="." />
+
+                    <Button
+                        android:id="@+id/divide"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/" />
+
                 </TableRow>
 
             </TableLayout>

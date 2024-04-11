@@ -42,13 +42,17 @@ public class CalculatorMenu extends AppCompatActivity {
     Button ButtonDecimal = findViewById(R.id.decimal);
     Button ButtonLeft = findViewById(R.id.left);
     Button ButtonRight = findViewById(R.id.right);
+    Button ButtonZero = findViewById(R.id.zero);
     Button ButtonBracketStart = findViewById(R.id.bracketStart);
     Button ButtonBracketEnd = findViewById(R.id.bracketEnd);
     Button ButtonRoundUpStart = findViewById(R.id.RoundUpStart);
     Button ButtonRoundUpEnd = findViewById(R.id.RoundUpEnd);
     Button ButtonRoundDownStart = findViewById(R.id.RoundDownStart);
     Button ButtonRoundDownEnd = findViewById(R.id.RoundDownEnd);
-
+    Button ButtonPlus = findViewById(R.id.plus);
+    Button ButtonMinus = findViewById(R.id.minus);
+    Button ButtonTime = findViewById(R.id.times);
+    Button ButtonDivide = findViewById(R.id.divide);
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
