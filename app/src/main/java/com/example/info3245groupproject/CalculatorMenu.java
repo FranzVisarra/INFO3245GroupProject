@@ -524,7 +524,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
                         break;
                 }
 
-                }
+
             }
             //TODO warn user they wrong because you shouldn't have an open bracket without a close
             if(bracket!=0){
