@@ -34,7 +34,6 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
     ListView variables;
     ArrayAdapter<String> list;
     List<String> curForm;//the current formula on the screen, represented as a list
-    int listIndex;
     public String mode;
     public List<String> formList;//this is what is on the screen
     public int index;
@@ -132,7 +131,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
                 break;
         }
         statName = getIntent().getStringExtra("this value");
-        listIndex = 0;
+        index = 0;
         variables = findViewById(R.id.variables);
         list = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
         variables.setAdapter(list);
@@ -161,33 +160,47 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
             updateDisplay();
         } else if (id == R.id.plus) {
             curForm.add(index,"+");//this ensures that the index marker "|" is moved forward by inserting at previous
+            index++;
         } else if (id == R.id.minus) {
             curForm.add(index,"-");
+            index++;
         } else if (id == R.id.times) {
             curForm.add(index,"*");
+            index++;
         } else if (id == R.id.divide) {
             curForm.add(index,"/");
+            index++;
         } else if (id == R.id.bracketStart) {
             curForm.add(index,"(");
+            index++;
         } else if (id == R.id.bracketEnd) {
             curForm.add(index,")");
+            index++;
         } else if (id == R.id.RoundUpStart) {
             curForm.add(index,"[");
+            index++;
         } else if (id == R.id.RoundUpEnd) {
             curForm.add(index,"]");
+            index++;
         } else if (id == R.id.RoundDownStart) {
             curForm.add(index,"{");
+            index++;
         } else if (id == R.id.RoundDownEnd) {
             curForm.add(index,"}");
+            index++;
         } else if (id == R.id.left) {
-            curForm.remove("|");
-            index+=1;
-            curForm.add(index,"|");
+            if (index > 0) {
+                curForm.remove("|");
+                index++;
+                curForm.add(index, "|");
+            }
         } else if (id == R.id.right) {
-            curForm.remove("|");
-            index-=1;
-            curForm.add(index,"|");
-            curForm.add(">");
+            if (index < curForm.size()-1){
+                curForm.remove("|");
+                index--;
+                curForm.add(index,"|");
+                curForm.add(">");
+            }
         } else if (id == R.id.zero || id == R.id.one || id == R.id.two || id == R.id.three ||
                 id == R.id.four || id == R.id.five || id == R.id.six || id == R.id.seven ||
                 id == R.id.eight || id == R.id.nine || id == R.id.decimal) {
@@ -207,8 +220,8 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
             String input = b.getText().toString();
             if (index <= 0 || curForm.isEmpty()) { // Check if there is no previous index or the list is empty
                 // Case 'a': No valid previous index
-                curForm.add(input); // Add input as a new item at the beginning or in an empty list
-                index = curForm.size(); // Update index to new size
+                curForm.add(index,input); // Add input as a new item at the beginning or in an empty list
+                index++; // Update index to new size
             } else {
                 String lastEntry = curForm.get(index - 1);
                 if (Character.isDigit(lastEntry.charAt(lastEntry.length() - 1))) { // Check if the last entry ends with a number

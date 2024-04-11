@@ -33,6 +33,7 @@ public class GameMenu extends AppCompatActivity {
     ListView listView;
     ArrayAdapter<String> stats;
     List<String> statValues = new ArrayList<String>();
+    public String mode;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -44,6 +45,14 @@ public class GameMenu extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        mode = getIntent().getStringExtra("mode");
+        switch (mode){
+            case "none":
+
+                break;
+            case "return":
+                break;
+        }
         Dialog dialog = new Dialog(GameMenu.this);
         statValues.add("ADD NEW");
         listView = findViewById(R.id.ListView2);
