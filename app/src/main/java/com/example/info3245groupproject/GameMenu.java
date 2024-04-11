@@ -83,30 +83,36 @@ public class GameMenu extends AppCompatActivity {
     private void editStatValue(View view, Dialog dialog, String selectedFromList){
         dialog.setContentView(R.layout.edit_stat_popup_menu);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        Button edit = dialog.findViewById(R.id.btnEditStat);
+        Button editValues = dialog.findViewById(R.id.btnEditStat);
+        Button editFormula = dialog.findViewById(R.id.btnEditFormula);
         EditText editName = dialog.findViewById(R.id.editTextEditStatName);
         EditText editBaseValue = dialog.findViewById(R.id.editTextEditStatBaseValue);
         dialog.show();
-        edit.setOnClickListener(v -> {
+        editValues.setOnClickListener(v -> {
             String newName = editName.getText().toString();
-            String newBaseValue = editName.getText().toString();
+            String newBaseValue = editBaseValue.getText().toString();
+            //TODO check for no input
             if(newBaseValue.matches("\\d+(?:\\.\\d+)?")){
-                Intent EditIntent = new Intent(view.getContext(), CalculatorMenu.class);
-                String[] splitStat = selectedFromList.split(",");
-                //mode is sent so calculator can do different things
-                EditIntent.putExtra("mode", "edit");
-                EditIntent.putExtra("name", splitStat[0]);
-                EditIntent.putExtra("base value", splitStat[1]);
-                //EditIntent.putExtra("edited value", splitted[2]);
-                EditIntent.putExtra("formula", splitStat[3]);
-                String[] splitParent = splitStat[4].split("|");
-                EditIntent.putExtra("parent", splitParent);
-                String[] splitChild = splitStat[5].split("|");
-                EditIntent.putExtra("child", splitChild);
-                startActivity(new Intent(EditIntent));
+                //TODO edit that stat in the file somehow then invoke getFiles again
             } else{
                 Toast.makeText(GameMenu.this, "whoops, not a number", Toast.LENGTH_SHORT).show();
             }
+        });
+        editFormula.setOnClickListener(v -> {
+            Intent EditIntent = new Intent(view.getContext(), CalculatorMenu.class);
+            String[] splitStat = selectedFromList.split(",");
+            //mode is sent so calculator can do different things
+            EditIntent.putExtra("mode", "edit");
+            EditIntent.putExtra("name", splitStat[0]);
+            EditIntent.putExtra("base value", splitStat[1]);
+            //EditIntent.putExtra("edited value", splitted[2]);
+            EditIntent.putExtra("formula", splitStat[3]);
+            //String[] splitParent = splitStat[4].split("|");
+            //EditIntent.putExtra("parent", splitParent);
+            String[] splitChild = splitStat[5].split("|");
+            EditIntent.putExtra("child", splitChild);
+            startActivity(new Intent(EditIntent));
+            dialog.dismiss();
         });
     }
 
@@ -120,7 +126,6 @@ public class GameMenu extends AppCompatActivity {
         @Override
         public void run() {
             root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS+"/StatCalcfiles/"+fileName);
-            //TODO iterate through file to get stuff
             try(Scanner s = new Scanner(new FileReader(root))) {
                 while(s.hasNext()){
                     stats.add(s.nextLine());

@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,13 +24,20 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
 
     // only for test
     //private static Pattern alpha ;
-    public String thisValue;
+    //stored values
+    public String statName;
+    public float baseValue;
+    List<String> child;
+    //stored values
     public Dictionary<String, Float> varDict;
     List<String> listItems = new ArrayList<String>();
     ListView variables;
     ArrayAdapter<String> list;
     List<String> curForm;//the current formula on the screen, represented as a list
     int listIndex;
+    public String mode;
+    public List<String> formList;//this is what is on the screen
+    public int index;
 
 
     // All buttons declared
@@ -107,7 +115,23 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
         });
 
         //get value
-        thisValue = getIntent().getStringExtra("this value");
+        String mode = getIntent().getStringExtra("mode");
+        statName = getIntent().getStringExtra("name");
+        //TODO move to onstart method
+        switch (mode){
+            case "add":
+                break;
+            case "edit":
+                baseValue = Float.parseFloat(getIntent().getStringExtra("base value"));
+                String tempForm = getIntent().getStringExtra("formula");
+                String[] tempChild = getIntent().getStringArrayExtra("child");
+                child = Arrays.asList(tempChild);
+                curForm = StringToList(tempForm);
+                index = curForm.size()-1;
+                curForm.add("|");
+                break;
+        }
+        statName = getIntent().getStringExtra("this value");
         listIndex = 0;
         variables = findViewById(R.id.variables);
         list = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
@@ -136,51 +160,50 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
             ParseFormula(formula);
             updateDisplay();
         } else if (id == R.id.plus) {
-            curForm.add("+");
+            curForm.add(index,"+");//this ensures that the index marker "|" is moved forward by inserting at previous
         } else if (id == R.id.minus) {
-            curForm.add("-");
+            curForm.add(index,"-");
         } else if (id == R.id.times) {
-            curForm.add("*");
+            curForm.add(index,"*");
         } else if (id == R.id.divide) {
-            curForm.add("/");
-        } else if (id == R.id.left) {
-            curForm.add("<");
-        } else if (id == R.id.right) {
-            curForm.add(">");
+            curForm.add(index,"/");
         } else if (id == R.id.bracketStart) {
-            curForm.add("(");
+            curForm.add(index,"(");
         } else if (id == R.id.bracketEnd) {
-            curForm.add(")");
+            curForm.add(index,")");
         } else if (id == R.id.RoundUpStart) {
-            curForm.add("[");
+            curForm.add(index,"[");
         } else if (id == R.id.RoundUpEnd) {
-            curForm.add("]");
+            curForm.add(index,"]");
         } else if (id == R.id.RoundDownStart) {
-            curForm.add("{");
+            curForm.add(index,"{");
         } else if (id == R.id.RoundDownEnd) {
-            curForm.add("}");
-        } else if (id == R.id.zero) {
-            curForm.add("0");
-        } else if (id == R.id.one) {
-            curForm.add("1");
-        } else if (id == R.id.two) {
-            curForm.add("2");
-        } else if (id == R.id.three) {
-            curForm.add("3");
-        } else if (id == R.id.four) {
-            curForm.add("4");
-        } else if (id == R.id.five) {
-            curForm.add("5");
-        } else if (id == R.id.six) {
-            curForm.add("6");
-        } else if (id == R.id.seven) {
-            curForm.add("7");
-        } else if (id == R.id.eight) {
-            curForm.add("8");
-        } else if (id == R.id.nine) {
-            curForm.add("9");
-        } else if (id == R.id.decimal) {
-            curForm.add(".");
+            curForm.add(index,"}");
+        } else if (id == R.id.left) {
+            curForm.remove("|");
+            index+=1;
+            curForm.add(index,"|");
+        } else if (id == R.id.right) {
+            curForm.remove("|");
+            index-=1;
+            curForm.add(index,"|");
+            curForm.add(">");
+        } else if (id == R.id.zero || id == R.id.one || id == R.id.two || id == R.id.three ||
+                id == R.id.four || id == R.id.five || id == R.id.six || id == R.id.seven ||
+                id == R.id.eight || id == R.id.nine || id == R.id.decimal) {
+            //TODO Handle number and decimal button presses
+            //TODO if   a | if index -1 is less than 0 //you dont want to end up at index-1
+            //TODO if   b | if index - 1 is number
+            //TODO step 1: add new input to the previous index, like making 2 and 2 be 22
+            //TODO else b | else if index-1 is decimal
+            //TODO if   c | if this input is decimal
+            //TODO step 1: do nothing because cant double decimal
+            //TODO else c |
+            //TODO step 1: do nothing again
+            //TODO else a |
+            //TODO step 1: add this variable as list item
+            Button b = (Button) v;
+            curForm.add(b.getText().toString());
         } else {
             // TODO should do nothing cause there shouldnt be any other click
         }
@@ -193,7 +216,6 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
 
     public void ParseFormula(String form)
     {
-        List<String> formList;
         formList = StringToList(form);
         //TODO make string get sent to file
         //this is result
