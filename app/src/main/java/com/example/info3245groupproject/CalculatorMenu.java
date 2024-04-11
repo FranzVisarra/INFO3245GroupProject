@@ -527,12 +527,16 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
 
             }
             //TODO warn user they wrong because you shouldn't have an open bracket without a close
-            if(bracket!=0){
+            if (bracket != 0) {
+                runOnUiThread(() -> Toast.makeText(CalculatorMenu.this, "Mismatched parentheses.", Toast.LENGTH_LONG).show());
             }
-            if(roundUp!=0){
+            if (roundUp != 0) {
+                runOnUiThread(() -> Toast.makeText(CalculatorMenu.this, "Mismatched square brackets.", Toast.LENGTH_LONG).show());
             }
-            if(roundDown!=0){
+            if (roundDown != 0) {
+                runOnUiThread(() -> Toast.makeText(CalculatorMenu.this, "Mismatched curly braces.", Toast.LENGTH_LONG).show());
             }
+
         }
     };
 
