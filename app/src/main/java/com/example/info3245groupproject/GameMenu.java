@@ -55,13 +55,19 @@ public class GameMenu extends AppCompatActivity {
                     case "ADD NEW":
                         //TODO switch to calculator with data
                         System.out.println(selectedFromList);
-                        String tempString = (String) listView.getItemAtPosition(position);
-                        Intent new_intent=new Intent(view.getContext(), CalculatorMenu.class);
-                        new_intent.putExtra("this value", selectedFromList);
+                        //String tempString = pars
+                        Intent NewIntent=new Intent(view.getContext(), CalculatorMenu.class);
+                        NewIntent.putExtra("this value", selectedFromList);
                         //TODO make get in other thing
                         break;
                     default:
                         //TODO open next activity with file name
+                        System.out.println(selectedFromList);
+                        //String tempString = pars
+                        Intent EditIntent=new Intent(view.getContext(), CalculatorMenu.class);
+                        //split string with character
+                        String[] splitted = selectedFromList.split(",");
+                        EditIntent.putExtra("this value", selectedFromList);
                         break;
                 }
             }
