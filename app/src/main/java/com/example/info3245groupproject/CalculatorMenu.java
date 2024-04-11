@@ -125,31 +125,53 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.Calculate:
-//                // Calculate button pressed: compute the formula
-//                // TODO add the calculation process
-//                String formula = curForm.stream().collect(Collectors.joining());
-//                ParseFormula(formula);
-//                break;
-//            case R.id.plus:
-//                // "+" button pressed: add "+" to the formula
-//                curForm.add("+");
-//                updateDisplay();
-//                break;
-//            case R.id.minus:
-//                // "-" button pressed: add "-" to the formula
-//                curForm.add("-");
-//                updateDisplay();
-//                break;
-//            default:
-//                // For all other buttons, add their text to the current formula
-//                Button b = (Button) v;
-//                curForm.add(b.getText().toString());
-//                updateDisplay();
-//                break;
-//        }
+        int id = v.getId();  // Get the ID of the clicked view
+
+        if (id == R.id.Calculate) {
+            // Handle the Calculate button: perform calculation
+            String formula = curForm.stream().collect(Collectors.joining());
+            ParseFormula(formula);
+            updateDisplay();
+        } else if (id == R.id.plus) {
+            curForm.add("+");
+        } else if (id == R.id.minus) {
+            curForm.add("-");
+        } else if (id == R.id.times) {
+            curForm.add("*");
+        } else if (id == R.id.divide) {
+            curForm.add("/");
+        } else if (id == R.id.left) {
+            curForm.add("<");
+        } else if (id == R.id.right) {
+            curForm.add(">");
+        } else if (id == R.id.bracketStart) {
+            curForm.add("(");
+        } else if (id == R.id.bracketEnd) {
+            curForm.add(")");
+        } else if (id == R.id.RoundUpStart) {
+            curForm.add("[");
+        } else if (id == R.id.RoundUpEnd) {
+            curForm.add("]");
+        } else if (id == R.id.RoundDownStart) {
+            curForm.add("{");
+        } else if (id == R.id.RoundDownEnd) {
+            curForm.add("}");
+        } else if (id == R.id.zero || id == R.id.one || id == R.id.two || id == R.id.three ||
+                id == R.id.four || id == R.id.five || id == R.id.six || id == R.id.seven ||
+                id == R.id.eight || id == R.id.nine || id == R.id.decimal) {
+            // Handle number and decimal button presses
+            Button b = (Button) v;
+            curForm.add(b.getText().toString());
+        } else {
+            // Handle any other unclassified button presses
+            Button b = (Button) v;
+            curForm.add(b.getText().toString());
+        }
+
+        // Always update the display after modifying curForm
+        updateDisplay();
     }
+
 
 
     public void ParseFormula(String form)
