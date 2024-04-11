@@ -125,30 +125,30 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.Calculate:
-                // Calculate button pressed: compute the formula
-                // TODO add the calculation process
-                String formula = curForm.stream().collect(Collectors.joining());
-                ParseFormula(formula);
-                break;
-            case R.id.plus:
-                // "+" button pressed: add "+" to the formula
-                curForm.add("+");
-                updateDisplay();
-                break;
-            case R.id.minus:
-                // "-" button pressed: add "-" to the formula
-                curForm.add("-");
-                updateDisplay();
-                break;
-            default:
-                // For all other buttons, add their text to the current formula
-                Button b = (Button) v;
-                curForm.add(b.getText().toString());
-                updateDisplay();
-                break;
-        }
+//        switch (v.getId()) {
+//            case R.id.Calculate:
+//                // Calculate button pressed: compute the formula
+//                // TODO add the calculation process
+//                String formula = curForm.stream().collect(Collectors.joining());
+//                ParseFormula(formula);
+//                break;
+//            case R.id.plus:
+//                // "+" button pressed: add "+" to the formula
+//                curForm.add("+");
+//                updateDisplay();
+//                break;
+//            case R.id.minus:
+//                // "-" button pressed: add "-" to the formula
+//                curForm.add("-");
+//                updateDisplay();
+//                break;
+//            default:
+//                // For all other buttons, add their text to the current formula
+//                Button b = (Button) v;
+//                curForm.add(b.getText().toString());
+//                updateDisplay();
+//                break;
+//        }
     }
 
 
