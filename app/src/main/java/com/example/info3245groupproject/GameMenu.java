@@ -20,8 +20,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,34 +48,6 @@ public class GameMenu extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        mode = getIntent().getStringExtra("mode");
-        String[] tempParent;
-        switch (mode){
-            case "none":
-                //Literally nothing. like you came from the main screen
-                break;
-            case "edit":
-                //TODO find stat by name reference then proceed to edit that line
-                List<String> recievedEdited = new ArrayList<String>();
-                recievedEdited.add(getIntent().getStringExtra("name"));
-                recievedEdited.add(getIntent().getStringExtra("base value"));
-                recievedEdited.add(getIntent().getStringExtra("edited value"));
-                recievedEdited.add(getIntent().getStringExtra("formula"));
-                tempParent = getIntent().getStringArrayExtra("parent");
-                recievedEdited.add(getIntent().getStringExtra("parent"));
-                String[] tempChild = getIntent().getStringArrayExtra("child");
-                recievedEdited.add(getIntent().getStringExtra("child"));
-            case "return":
-                //TODO write new stat to file
-                List<String> recieved = new ArrayList<String>();
-                recieved.add(getIntent().getStringExtra("name"));
-                recieved.add(getIntent().getStringExtra("base value"));
-                recieved.add(getIntent().getStringExtra("edited value"));
-                recieved.add(getIntent().getStringExtra("formula"));
-                tempParent = getIntent().getStringArrayExtra("parent");
-                recieved.add(getIntent().getStringExtra("parent"));
-                break;
-        }
         Dialog dialog = new Dialog(GameMenu.this);
         statValues.add("ADD NEW");
         listView = findViewById(R.id.ListView2);
@@ -149,6 +124,93 @@ public class GameMenu extends AppCompatActivity {
         super.onStart();
         Thread getFiles = new Thread(GetFiles);
         getFiles.start();
+
+        mode = getIntent().getStringExtra("mode");
+        String[] tempParent;
+        String[] tempChild;
+        String tempParentString = null;
+        String tempChildString = null;
+        switch (mode){
+            case "none":
+                //Literally nothing. like you came from the main screen
+                break;
+            case "edit"://when you edit a value
+                //TODO find stat by name reference then proceed to edit that line
+                List<String> recievedEdited = new ArrayList<String>();
+                recievedEdited.add(getIntent().getStringExtra("name")+"|");
+                recievedEdited.add(getIntent().getStringExtra("base value")+"|");
+                recievedEdited.add(getIntent().getStringExtra("edited value")+"|");
+                recievedEdited.add(getIntent().getStringExtra("formula")+"|");
+                tempParent = getIntent().getStringArrayExtra("parent");
+                //TODO what if length empty
+                for (int i = 0; i < tempParent.length; i++){
+                    if (i !=0){
+                        tempParentString += tempParent[i]+",";
+                    }else{
+                        tempParentString = tempParent[i];
+                    }
+                    //TODO parent stuff specifically search through and get
+                }
+                recievedEdited.add(tempParentString+"|");
+                tempChild = getIntent().getStringArrayExtra("parent");
+                //TODO what if length empty
+                for (int i = 0; i < tempChild.length; i++){
+                    if (i !=0){
+                        tempChildString += tempChild[i]+",";
+                    }else{
+                        tempChildString = tempChild[i];
+                    }
+                    //TODO child stuff
+                }
+                recievedEdited.add(tempChildString);
+            case "create"://when you create a value
+                //TODO write new stat to file
+                List<String> recieved = new ArrayList<String>();
+                recieved.add(getIntent().getStringExtra("name")+"|");
+                recieved.add(getIntent().getStringExtra("base value")+"|");
+                recieved.add(getIntent().getStringExtra("edited value")+"|");
+                recieved.add(getIntent().getStringExtra("formula")+"|");
+                tempParent = getIntent().getStringArrayExtra("parent");
+                //TODO what if length empty
+                for (int i = 0; i < tempParent.length; i++){
+                    if (i !=0){
+                        tempParentString += tempParent[i]+",";
+                    }else{
+                        tempParentString = tempParent[i];
+                    }
+                    //TODO parent stuff specifically search through and get
+                }
+                recieved.add(tempParentString+"|");
+                tempChild = getIntent().getStringArrayExtra("parent");
+                //TODO what if length empty
+                for (int i = 0; i < tempChild.length; i++){
+                    if (i !=0){
+                        tempChildString += tempChild[i]+",";
+                    }else{
+                        tempChildString = tempChild[i];
+                    }
+                    //TODO child stuff
+                }
+                recieved.add(tempChildString);
+                //append end of file
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(root);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                OutputStreamWriter osw = new OutputStreamWriter(fos);
+                try {
+                    osw.write(tempParentString);
+                    osw.flush();
+                    osw.close();
+                    fos.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                break;
+        }
     }
 
     private Runnable GetFiles = new Runnable() {
