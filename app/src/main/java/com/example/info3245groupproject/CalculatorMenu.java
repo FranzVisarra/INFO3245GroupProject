@@ -6,6 +6,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,8 +17,9 @@ import androidx.core.view.WindowInsetsCompat;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class CalculatorMenu extends AppCompatActivity {
+public class CalculatorMenu extends AppCompatActivity implements View.OnClickListener {
 
     //private static Pattern alpha ;
     public String thisValue;
@@ -29,36 +31,73 @@ public class CalculatorMenu extends AppCompatActivity {
     int listIndex;
 
 
-    // all the button
-    Button ButtonOne = findViewById(R.id.one);
-    Button ButtonTwo = findViewById(R.id.two);
-    Button ButtonThree = findViewById(R.id.three);
-    Button ButtonFour = findViewById(R.id.four);
-    Button ButtonFive = findViewById(R.id.five);
-    Button ButtonSix = findViewById(R.id.six);
-    Button ButtonSeven = findViewById(R.id.seven);
-    Button ButtonEight = findViewById(R.id.eight);
-    Button ButtonNine = findViewById(R.id.nine);
-    Button ButtonDecimal = findViewById(R.id.decimal);
-    Button ButtonLeft = findViewById(R.id.left);
-    Button ButtonRight = findViewById(R.id.right);
-    Button ButtonZero = findViewById(R.id.zero);
-    Button ButtonBracketStart = findViewById(R.id.bracketStart);
-    Button ButtonBracketEnd = findViewById(R.id.bracketEnd);
-    Button ButtonRoundUpStart = findViewById(R.id.RoundUpStart);
-    Button ButtonRoundUpEnd = findViewById(R.id.RoundUpEnd);
-    Button ButtonRoundDownStart = findViewById(R.id.RoundDownStart);
-    Button ButtonRoundDownEnd = findViewById(R.id.RoundDownEnd);
-    Button ButtonPlus = findViewById(R.id.plus);
-    Button ButtonMinus = findViewById(R.id.minus);
-    Button ButtonTime = findViewById(R.id.times);
-    Button ButtonDivide = findViewById(R.id.divide);
-    Button ButtonCalcu = findViewById(R.id.Calculate);
+    // All buttons declared
+    Button ButtonOne, ButtonTwo, ButtonThree, ButtonFour, ButtonFive, ButtonSix, ButtonSeven, ButtonEight,
+            ButtonNine, ButtonDecimal, ButtonLeft, ButtonRight, ButtonZero, ButtonBracketStart, ButtonBracketEnd,
+            ButtonRoundUpStart, ButtonRoundUpEnd, ButtonRoundDownStart, ButtonRoundDownEnd, ButtonPlus, ButtonMinus,
+            ButtonTime, ButtonDivide, ButtonCalcu;
+
+    private void initViews() {
+        // Initialize each button and set the click listener
+        ButtonOne = findViewById(R.id.one);
+        ButtonTwo = findViewById(R.id.two);
+        ButtonThree = findViewById(R.id.three);
+        ButtonFour = findViewById(R.id.four);
+        ButtonFive = findViewById(R.id.five);
+        ButtonSix = findViewById(R.id.six);
+        ButtonSeven = findViewById(R.id.seven);
+        ButtonEight = findViewById(R.id.eight);
+        ButtonNine = findViewById(R.id.nine);
+        ButtonDecimal = findViewById(R.id.decimal);
+        ButtonLeft = findViewById(R.id.left);
+        ButtonRight = findViewById(R.id.right);
+        ButtonZero = findViewById(R.id.zero);
+        ButtonBracketStart = findViewById(R.id.bracketStart);
+        ButtonBracketEnd = findViewById(R.id.bracketEnd);
+        ButtonRoundUpStart = findViewById(R.id.RoundUpStart);
+        ButtonRoundUpEnd = findViewById(R.id.RoundUpEnd);
+        ButtonRoundDownStart = findViewById(R.id.RoundDownStart);
+        ButtonRoundDownEnd = findViewById(R.id.RoundDownEnd);
+        ButtonPlus = findViewById(R.id.plus);
+        ButtonMinus = findViewById(R.id.minus);
+        ButtonTime = findViewById(R.id.times);
+        ButtonDivide = findViewById(R.id.divide);
+        ButtonCalcu = findViewById(R.id.Calculate);
+
+        // Set this class as onClick listener for each button
+        ButtonOne.setOnClickListener(this);
+        ButtonTwo.setOnClickListener(this);
+        ButtonThree.setOnClickListener(this);
+        ButtonFour.setOnClickListener(this);
+        ButtonFive.setOnClickListener(this);
+        ButtonSix.setOnClickListener(this);
+        ButtonSeven.setOnClickListener(this);
+        ButtonEight.setOnClickListener(this);
+        ButtonNine.setOnClickListener(this);
+        ButtonDecimal.setOnClickListener(this);
+        ButtonLeft.setOnClickListener(this);
+        ButtonRight.setOnClickListener(this);
+        ButtonZero.setOnClickListener(this);
+        ButtonBracketStart.setOnClickListener(this);
+        ButtonBracketEnd.setOnClickListener(this);
+        ButtonRoundUpStart.setOnClickListener(this);
+        ButtonRoundUpEnd.setOnClickListener(this);
+        ButtonRoundDownStart.setOnClickListener(this);
+        ButtonRoundDownEnd.setOnClickListener(this);
+        ButtonPlus.setOnClickListener(this);
+        ButtonMinus.setOnClickListener(this);
+        ButtonTime.setOnClickListener(this);
+        ButtonDivide.setOnClickListener(this);
+        ButtonCalcu.setOnClickListener(this);
+    }
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.calculator_menu);
+        initViews();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -72,6 +111,8 @@ public class CalculatorMenu extends AppCompatActivity {
         list = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
         variables.setAdapter(list);
         variables.setClickable(true);
+
+
         variables.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -81,6 +122,35 @@ public class CalculatorMenu extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.Calculate:
+                // Calculate button pressed: compute the formula
+                // TODO add the calculation process
+                String formula = curForm.stream().collect(Collectors.joining());
+                ParseFormula(formula);
+                break;
+            case R.id.plus:
+                // "+" button pressed: add "+" to the formula
+                curForm.add("+");
+                updateDisplay();
+                break;
+            case R.id.minus:
+                // "-" button pressed: add "-" to the formula
+                curForm.add("-");
+                updateDisplay();
+                break;
+            default:
+                // For all other buttons, add their text to the current formula
+                Button b = (Button) v;
+                curForm.add(b.getText().toString());
+                updateDisplay();
+                break;
+        }
+    }
+
 
     public void ParseFormula(String form)
     {
@@ -296,6 +366,15 @@ public class CalculatorMenu extends AppCompatActivity {
         return temp;
     }
 
+    private void updateDisplay() {
+        TextView display = findViewById(R.id.ShowFomula);
+        StringBuilder displayText = new StringBuilder();
+        for (String s : curForm) {
+            displayText.append(s);
+        }
+        display.setText(displayText.toString());  // Update the TextView to show the current formula
+    }
+
     private Runnable CheckInput = new Runnable() {
         @Override
         public void run() {
@@ -345,4 +424,6 @@ public class CalculatorMenu extends AppCompatActivity {
             }
         }
     };
+
+
 }

@@ -13,10 +13,10 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/ShowFomula"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="Please enter your fomula" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -114,19 +114,19 @@
                         android:id="@+id/left"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="<" />
-
-                    <Button
-                        android:id="@+id/right"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=">" />
+                        android:text="left" />
 
                     <Button
                         android:id="@+id/zero"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0" />
+
+                    <Button
+                        android:id="@+id/right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="right" />
 
                 </TableRow>
 
