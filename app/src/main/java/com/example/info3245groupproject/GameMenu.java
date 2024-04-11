@@ -60,13 +60,17 @@ public class GameMenu extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Add New clicked", Toast.LENGTH_SHORT).show();
                         System.out.println(selectedFromList);
                         break;
-                    default:
+                    case "Game1":
                         //TODO open next activity with file name
                         Intent intent1=new Intent(GameMenu.this, Game1.class);
                         startActivities(new Intent[]{intent1});
                         Toast.makeText(getApplicationContext(), "Game1 clicked", Toast.LENGTH_SHORT).show();
                         System.out.println(selectedFromList);
                         break;
+                    default:
+                        Toast.makeText(getApplicationContext(), "No action for selected item: " + selectedFromList, Toast.LENGTH_SHORT).show();
+                        break;
+
                 }
             }
         });
