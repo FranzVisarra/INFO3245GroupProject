@@ -62,8 +62,8 @@ public class GameMenu extends AppCompatActivity {
                         break;
                     default:
                         //TODO open next activity with file name
-                        Intent intent=new Intent(GameMenu.this, Game1.class);
-                        startActivities(new Intent[]{intent});
+                        Intent intent1=new Intent(GameMenu.this, Game1.class);
+                        startActivities(new Intent[]{intent1});
                         Toast.makeText(getApplicationContext(), "Game1 clicked", Toast.LENGTH_SHORT).show();
                         System.out.println(selectedFromList);
                         break;
