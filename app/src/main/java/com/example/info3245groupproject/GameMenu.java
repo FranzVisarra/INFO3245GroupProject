@@ -46,11 +46,31 @@ public class GameMenu extends AppCompatActivity {
             return insets;
         });
         mode = getIntent().getStringExtra("mode");
+        String[] tempParent;
         switch (mode){
             case "none":
-
+                //Literally nothing. like you came from the main screen
                 break;
+            case "edit":
+                //TODO find stat by name reference then proceed to edit that line
+                List<String> recievedEdited = new ArrayList<String>();
+                recievedEdited.add(getIntent().getStringExtra("name"));
+                recievedEdited.add(getIntent().getStringExtra("base value"));
+                recievedEdited.add(getIntent().getStringExtra("edited value"));
+                recievedEdited.add(getIntent().getStringExtra("formula"));
+                tempParent = getIntent().getStringArrayExtra("parent");
+                recievedEdited.add(getIntent().getStringExtra("parent"));
+                String[] tempChild = getIntent().getStringArrayExtra("child");
+                recievedEdited.add(getIntent().getStringExtra("child"));
             case "return":
+                //TODO write new stat to file
+                List<String> recieved = new ArrayList<String>();
+                recieved.add(getIntent().getStringExtra("name"));
+                recieved.add(getIntent().getStringExtra("base value"));
+                recieved.add(getIntent().getStringExtra("edited value"));
+                recieved.add(getIntent().getStringExtra("formula"));
+                tempParent = getIntent().getStringArrayExtra("parent");
+                recieved.add(getIntent().getStringExtra("parent"));
                 break;
         }
         Dialog dialog = new Dialog(GameMenu.this);
