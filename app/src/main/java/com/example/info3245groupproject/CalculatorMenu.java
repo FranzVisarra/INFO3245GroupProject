@@ -53,6 +53,7 @@ public class CalculatorMenu extends AppCompatActivity {
     Button ButtonMinus = findViewById(R.id.minus);
     Button ButtonTime = findViewById(R.id.times);
     Button ButtonDivide = findViewById(R.id.divide);
+    Button ButtonCalcu = findViewById(R.id.Calculate);
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
