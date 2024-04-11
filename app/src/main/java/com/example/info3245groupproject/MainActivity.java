@@ -1,6 +1,8 @@
-package  com.example.info3245groupproject;
+package com.example.info3245groupproject;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,8 +21,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.info3245groupproject.R;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> list;
     public File root;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +43,10 @@ public class MainActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+            return WindowInsetsCompat.CONSUMED;
         });
 
         Dialog dialog = new Dialog(MainActivity.this);
-        //default add button
         listItems.add("ADD NEW");
 
         files = findViewById(R.id.ListView1);
@@ -56,38 +56,23 @@ public class MainActivity extends AppCompatActivity {
         files.setOnItemClickListener((parent, view, position, id) -> {
             String selectedFromList = files.getItemAtPosition(position).toString();
             if ("ADD NEW".equals(selectedFromList)) {
-                dialog.setContentView(R.layout.add_file_popup_menu);
-                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                Button create = dialog.findViewById(R.id.btnCreateNewFile);
-                EditText txtInput = dialog.findViewById(R.id.editTextUserInputNewFileName);
-                dialog.show();
-                create.setOnClickListener(v -> {
-                    String input = txtInput.getText().toString();
-                    if (CheckUserInput(input)) {
-                        try {
-                            File file = new File(root + "/" + input + ".txt");
-                            if (file.createNewFile()) {
-                                listItems.add(input);
-                                list.notifyDataSetChanged();
-                                Toast.makeText(MainActivity.this, input + " created.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(MainActivity.this, "File already exists.", Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Toast.makeText(MainActivity.this, "Error creating file.", Toast.LENGTH_SHORT).show();
-                        }
-                        dialog.dismiss();
-                    } else {
-                        Toast.makeText(MainActivity.this, "Invalid input. Please avoid special characters or leaving it blank.", Toast.LENGTH_LONG).show();
-                    }
-                });
+                handleAddNewFile(dialog);
             } else {
-                // TODO Open next activity with file name
                 Intent detailIntent = new Intent(MainActivity.this, Game1.class);
                 detailIntent.putExtra("fileName", selectedFromList);
                 startActivity(detailIntent);
             }
+        });
+
+        files.setOnItemLongClickListener((parent, view, position, id) -> {
+            if (position == 0) {
+                Toast.makeText(MainActivity.this, "This item cannot be deleted.", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            String selectedItem = listItems.get(position);
+            showDeleteConfirmationDialog(selectedItem, position);
+            return true;
         });
     }
 
@@ -98,11 +83,39 @@ public class MainActivity extends AppCompatActivity {
         getFiles.start();
     }
 
+    private void handleAddNewFile(Dialog dialog) {
+        dialog.setContentView(R.layout.add_file_popup_menu);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Button create = dialog.findViewById(R.id.btnCreateNewFile);
+        EditText txtInput = dialog.findViewById(R.id.editTextUserInputNewFileName);
+        dialog.show();
+        create.setOnClickListener(v -> {
+            String input = txtInput.getText().toString();
+            if (CheckUserInput(input)) {
+                try {
+                    File file = new File(root + "/" + input + ".txt");
+                    if (file.createNewFile()) {
+                        listItems.add(input);
+                        list.notifyDataSetChanged();
+                        Toast.makeText(MainActivity.this, input + " created.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "File already exists.", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, "Error creating file.", Toast.LENGTH_SHORT).show();
+                }
+                dialog.dismiss();
+            } else {
+                Toast.makeText(MainActivity.this, "Invalid input. Please avoid special characters or leaving it blank.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     private boolean CheckUserInput(String input) {
         if (input == null || input.trim().isEmpty()) {
-            return false; // Check for non-empty
+            return false;
         }
-        // Check for invalid characters. Adjust the list according to your requirements.
         String invalidChars = "/\\:?\"<>|*";
         for (char c : invalidChars.toCharArray()) {
             if (input.indexOf(c) != -1) {
@@ -112,30 +125,41 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private Runnable GetFiles = new Runnable() {
-        @Override
-        public void run() {
-            root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS + "/StatCalcfiles");
-            if (!root.exists()) {
-                if (!root.mkdir()) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Failed to make directory", Toast.LENGTH_SHORT).show());
-                } else {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Directory made", Toast.LENGTH_SHORT).show());
-                }
-            }
-            File[] filesArray = root.listFiles();
-            if (filesArray != null) {
-                for (File f : filesArray) {
-                    String fileName = f.getName();
-                    // Ensure you update the UI on the UI thread
-                    runOnUiThread(() -> {
-                        listItems.add(fileName);
+    private void showDeleteConfirmationDialog(String fileName, int position) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Delete File")
+                .setMessage("Are you sure you want to delete this file: " + fileName + "?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    File file = new File(root + File.separator + fileName );
+                    if (file.delete()) {
+                        Toast.makeText(MainActivity.this, fileName + " deleted.", Toast.LENGTH_SHORT).show();
+                        listItems.remove(position);
                         list.notifyDataSetChanged();
-                    });
-                }
+                    } else {
+                        Toast.makeText(MainActivity.this, "Error deleting file.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private Runnable GetFiles = () -> {
+        root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS + "/StatCalcfiles");
+        if (!root.exists() && !root.mkdirs()) {
+            runOnUiThread(() -> Toast.makeText(MainActivity.this, "Failed to make directory", Toast.LENGTH_SHORT).show());
+        }
+        File[] filesArray = root.listFiles();
+        if (filesArray != null) {
+            runOnUiThread(() -> listItems.clear());
+            runOnUiThread(() -> listItems.add("ADD NEW"));
+            for (File f : filesArray) {
+                String fileName = f.getName();
+                runOnUiThread(() -> {
+                    listItems.add(fileName);
+                    list.notifyDataSetChanged();
+                });
             }
         }
     };
 }
-
-
