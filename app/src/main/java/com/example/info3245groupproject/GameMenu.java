@@ -57,7 +57,7 @@ public class GameMenu extends AppCompatActivity {
                         System.out.println(selectedFromList);
                         //String tempString = pars
                         Intent NewIntent=new Intent(view.getContext(), CalculatorMenu.class);
-                        NewIntent.putExtra("this value", selectedFromList);
+                        NewIntent.putExtra("this name", selectedFromList);
                         //TODO make get in other thing
                         break;
                     default:
@@ -67,7 +67,12 @@ public class GameMenu extends AppCompatActivity {
                         Intent EditIntent=new Intent(view.getContext(), CalculatorMenu.class);
                         //split string with character
                         String[] splitted = selectedFromList.split(",");
-                        EditIntent.putExtra("this value", selectedFromList);
+                        EditIntent.putExtra("name", splitted[0]);
+                        EditIntent.putExtra("base value", splitted[1]);
+                        EditIntent.putExtra("edited value", splitted[2]);
+                        EditIntent.putExtra("formula", splitted[3]);
+                        EditIntent.putExtra("parent", splitted[4]);
+                        EditIntent.putExtra("child", splitted[5]);
                         break;
                 }
             }
