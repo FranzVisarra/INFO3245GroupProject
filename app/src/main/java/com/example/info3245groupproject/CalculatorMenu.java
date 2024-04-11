@@ -191,6 +191,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
         } else if (id == R.id.zero || id == R.id.one || id == R.id.two || id == R.id.three ||
                 id == R.id.four || id == R.id.five || id == R.id.six || id == R.id.seven ||
                 id == R.id.eight || id == R.id.nine || id == R.id.decimal) {
+
             //TODO Handle number and decimal button presses
             //TODO if   a | if index -1 is less than 0 //you dont want to end up at index-1
             //TODO if   b | if index - 1 is number
@@ -203,10 +204,38 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
             //TODO else a |
             //TODO step 1: add this variable as list item
             Button b = (Button) v;
-            curForm.add(b.getText().toString());
-        } else {
-            // TODO should do nothing cause there shouldnt be any other click
+            String input = b.getText().toString();
+            if (index <= 0 || curForm.isEmpty()) { // Check if there is no previous index or the list is empty
+                // Case 'a': No valid previous index
+                curForm.add(input); // Add input as a new item at the beginning or in an empty list
+                index = curForm.size(); // Update index to new size
+            } else {
+                String lastEntry = curForm.get(index - 1);
+                if (Character.isDigit(lastEntry.charAt(lastEntry.length() - 1))) { // Check if the last entry ends with a number
+                    // Case 'b': Last entry is a number
+                    if (input.equals(".")) {
+                        if (lastEntry.contains(".")) {
+                            // Case 'c': Input is a decimal and last entry already contains a decimal
+                            // Do nothing to prevent double decimals
+                        } else {
+                            // Add decimal to the existing number
+                            curForm.set(index - 1, lastEntry + input);
+                        }
+                    } else {
+                        // Append the number to form a larger number (e.g., 2 and 2 to form 22)
+                        curForm.set(index - 1, lastEntry + input);
+                    }
+                } else if (lastEntry.equals(".") && input.equals(".")) {
+                    // Case 'b' and 'c' together: last entry is decimal and input is also decimal
+                    // Do nothing to prevent double decimals
+                } else {
+                    // Case 'else a': Last entry is not a number suitable for combining
+                    curForm.add(index, input); // Add the input as a new separate item
+                    index++; // Move index forward to after the new entry
+                }
+            }
         }
+
 
         // update the display after modifying curForm
         updateDisplay();
