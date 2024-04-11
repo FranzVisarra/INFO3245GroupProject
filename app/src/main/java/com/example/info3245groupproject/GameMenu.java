@@ -1,5 +1,6 @@
 package com.example.info3245groupproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -52,8 +53,12 @@ public class GameMenu extends AppCompatActivity {
                 String selectedFromList = listView.getItemAtPosition(position).toString();
                 switch (selectedFromList){
                     case "ADD NEW":
-                        //TODO switch to calculator intent
+                        //TODO switch to calculator with data
                         System.out.println(selectedFromList);
+                        String tempString = (String) listView.getItemAtPosition(position);
+                        Intent new_intent=new Intent(view.getContext(), CalculatorMenu.class);
+                        new_intent.putExtra("this value", selectedFromList);
+                        //TODO make get in other thing
                         break;
                     default:
                         //TODO open next activity with file name

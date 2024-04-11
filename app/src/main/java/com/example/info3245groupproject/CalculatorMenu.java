@@ -37,6 +37,8 @@ public class CalculatorMenu extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        //get value
+        thisValue = getIntent().getStringExtra("this value");
         listIndex = 0;
         variables = findViewById(R.id.variables);
         list = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
