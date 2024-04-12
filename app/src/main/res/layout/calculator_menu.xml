@@ -40,7 +40,7 @@
 
                     <Button
                         android:id="@+id/one"
-                        android:layout_width="wrap_content"
+                        android:layout_width="56dp"
                         android:layout_height="wrap_content"
                         android:text="1" />
 
@@ -111,16 +111,40 @@
                     android:layout_height="match_parent">
 
                     <Button
-                        android:id="@+id/left"
+                        android:id="@+id/decimal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="left" />
+                        android:text="." />
 
                     <Button
                         android:id="@+id/zero"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0" />
+
+                    <Button
+                        android:id="@+id/undo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CLR" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/left"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="left" />
+
+                    <Button
+                        android:id="@+id/divide"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/" />
 
                     <Button
                         android:id="@+id/right"
@@ -141,16 +165,16 @@
                         android:text="(" />
 
                     <Button
+                        android:id="@+id/times"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="X" />
+
+                    <Button
                         android:id="@+id/bracketEnd"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=")" />
-
-                    <Button
-                        android:id="@+id/plus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+" />
 
                 </TableRow>
 
@@ -162,19 +186,19 @@
                         android:id="@+id/RoundUpStart"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="[" />
+                        android:text="FLR[" />
+
+                    <Button
+                        android:id="@+id/plus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+" />
 
                     <Button
                         android:id="@+id/RoundUpEnd"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="]" />
-
-                    <Button
-                        android:id="@+id/minus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="-" />
+                        android:text="]FLR" />
 
                 </TableRow>
 
@@ -186,44 +210,31 @@
                         android:id="@+id/RoundDownStart"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="{" />
+                        android:text="CEIL{" />
+
+                    <Button
+                        android:id="@+id/minus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-" />
 
                     <Button
                         android:id="@+id/RoundDownEnd"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="}" />
-
-                    <Button
-                        android:id="@+id/times"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="X" />
+                        android:text="}CEIL" />
 
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <Button
-                        android:id="@+id/decimal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="." />
-
-                    <Button
-                        android:id="@+id/divide"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="/" />
+                    android:layout_height="match_parent" >
 
                     <Button
                         android:id="@+id/Calculate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Calcu" />
-
+                        android:text="Fin" />
                 </TableRow>
 
             </TableLayout>

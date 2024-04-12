@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     ListView files;
     ArrayAdapter<String> list;
     public File root;
-
+    public Dialog dlgAddNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             return WindowInsetsCompat.CONSUMED;
         });
 
-        Dialog dialog = new Dialog(MainActivity.this);
+        dlgAddNew = new Dialog(MainActivity.this);
         listItems.add("ADD NEW");
 
         files = findViewById(R.id.ListView1);
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         files.setOnItemClickListener((parent, view, position, id) -> {
             String selectedFromList = files.getItemAtPosition(position).toString();
             if ("ADD NEW".equals(selectedFromList)) {
-                handleAddNewFile(dialog);
+                handleAddNewFile(dlgAddNew);
             } else {
                 Intent detailIntent = new Intent(MainActivity.this, GameMenu.class);
                 detailIntent.putExtra("fileName", selectedFromList);
@@ -82,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
         Thread getFiles = new Thread(GetFiles);
         getFiles.start();
     }
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        dlgAddNew.dismiss();
+
+    }
 
     private void handleAddNewFile(Dialog dialog) {
         dialog.setContentView(R.layout.add_file_popup_menu);
@@ -105,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                     Toast.makeText(MainActivity.this, "Error creating file.", Toast.LENGTH_SHORT).show();
                 }
-                dialog.dismiss();
             } else {
                 Toast.makeText(MainActivity.this, "Invalid input. Please avoid special characters or leaving it blank.", Toast.LENGTH_LONG).show();
             }

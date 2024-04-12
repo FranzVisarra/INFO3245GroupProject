@@ -53,6 +53,7 @@ public class GameMenu extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        fileName = new File(getIntent().getStringExtra("fileName"));
         Dialog dialog = new Dialog(GameMenu.this);
         statValues.add("ADD NEW");
         listView = findViewById(R.id.ListView2);
@@ -65,21 +66,13 @@ public class GameMenu extends AppCompatActivity {
                 String selectedFromList = listView.getItemAtPosition(position).toString();
                 switch (selectedFromList){
                     case "ADD NEW":
-                        //TODO switch to calculator intent
+                        //TODO add dialog that switches to calculator intent
                         Intent newIntent = new Intent(view.getContext(), CalculatorMenu.class);
                         newIntent.putExtra("mode", "add");
                         startActivity(new Intent(newIntent));
                         Toast.makeText(getApplicationContext(), "Add New clicked", Toast.LENGTH_SHORT).show();
                         System.out.println(selectedFromList);
                         break;
-                        /*
-                    case "Game1":
-                        Intent intent1=new Intent(GameMenu.this, Game1.class);
-                        startActivities(new Intent[]{intent1});
-                        Toast.makeText(getApplicationContext(), "Game1 clicked", Toast.LENGTH_SHORT).show();
-                        System.out.println(selectedFromList);
-                        break;
-                         */
                     default:
                         //TODO open next activity with file name there is a reason this stuff is in default
                         editStatValue(view, dialog, selectedFromList);

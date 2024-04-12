@@ -202,10 +202,14 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
                 curForm.add(index,"|");
                 curForm.add(">");
             }
+        } else if (id == R.id.undo){
+            if (index > 0){
+                curForm.remove(index-1);
+                index--;
+            }
         } else if (id == R.id.zero || id == R.id.one || id == R.id.two || id == R.id.three ||
                 id == R.id.four || id == R.id.five || id == R.id.six || id == R.id.seven ||
                 id == R.id.eight || id == R.id.nine || id == R.id.decimal) {
-
             //TODO Handle number and decimal button presses
             //TODO if   a | if index -1 is less than 0 //you dont want to end up at index-1
             //TODO if   b | if index - 1 is number
@@ -219,7 +223,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
             //TODO step 1: add this variable as list item
             Button b = (Button) v;
             String input = b.getText().toString();
-            if (index <= 0 || curForm.isEmpty()) { // Check if there is no previous index or the list is empty
+            if (index <= 0 || curForm.size()<=1) { // Check if there is no previous index or the list is empty. 1 item is cursor
                 // Case 'a': No valid previous index
                 curForm.add(index,input); // Add input as a new item at the beginning or in an empty list
                 index++; // Update index to new size
@@ -231,7 +235,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
                         if (lastEntry.contains(".")) {
                             // Case 'c': Input is a decimal and last entry already contains a decimal
                             // Do nothing to prevent double decimals
-                        } else {
+                        } else if(lastEntry.matches("[0-9]")) {
                             // Add decimal to the existing number
                             curForm.set(index - 1, lastEntry + input);
                         }
@@ -259,12 +263,14 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
 
     public void ParseFormula(String form)
     {
+        //this is redundant. its already a list. but it came first so it will be edited later
         formList = StringToList(form);
         //TODO make string get sent to file
         //this is result
-        ShortenFormula(formList,"search");
+        ShortenFormula(curForm,"search");
 
     }
+    //TODO you can divide by zero. this is bad
     public List<String> StringToList(String form){
         List<String> formList = new ArrayList<>();
         int position = 0;//start position
@@ -287,16 +293,26 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
                 //add special character that was detected
                 formList.add(String.valueOf(form.charAt(i)));
                 //set position to start from at next index
-                position = i+1;
+                position = i;
             } else if (i == form.length()-1){//edge case
-                formList.add(form.substring(position,i));
+                formList.add(form.substring(position,i+1));//i + 1 because it dumb
             }
 
         }
         return formList;
     }
+    public void testShorteningFormula(){
+        List<String> test = new ArrayList<>();
+        test.add("4");
+        test.add("/");
+        test.add("2");
+        System.out.println(ShortenFormula(test,"search"));
+    }
     public List<String> ShortenFormula(List<String> temp,String mode)
     {
+        //remove cursor
+        temp.remove("|");
+        //initialize the formula that will be handled
         List<String> formula = new ArrayList<>();
         float calc;
         switch (mode){
@@ -383,9 +399,9 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
                             for (int n = -1; n < 2; n++){
                                 formula.add(temp.get(i+n));
                             }
-                            temp.remove(i-1);
-                            temp.remove(i);
                             temp.remove(i+1);
+                            temp.remove(i);
+                            temp.remove(i-1);
                             temp.add(i-1,ShortenFormula(formula,"calculate").get(0));
                             break;
                         }
@@ -401,9 +417,9 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
                             for (int n = -1; n < 2; n++){
                                 formula.add(temp.get(i+n));
                             }
-                            temp.remove(i-1);
-                            temp.remove(i);
                             temp.remove(i+1);
+                            temp.remove(i);
+                            temp.remove(i-1);
                             temp.add(i-1,ShortenFormula(formula,"calculate").get(0));
                             break;
                         }
@@ -430,6 +446,19 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
                 return formula;
             case "calculate"://this method will always have 3 parts
                 //turn variables into the numbers they represent
+                //so the match method returns true for 2.0 and 0002.0000001 but false if .2 or 2. so fixing THAT
+                if(temp.get(0).charAt(temp.get(0).length()-1)=='.'){
+                    temp.set(0,temp.get(0)+"0");
+                } else if (temp.get(0).charAt(0)=='.'){
+                    //add 0 to end if last character is "."
+                    temp.set(0,"0"+temp.get(0));
+                }
+                if(temp.get(2).charAt(temp.get(2).length()-1)=='.'){
+                    temp.set(0,temp.get(0)+"0");
+                } else if (temp.get(2).charAt(0)=='.'){
+                    //add 0 to end if last character is "."
+                    temp.set(2,"0"+temp.get(2));
+                }
                 if (!temp.get(0).matches("\\d+(?:\\.\\d+)?")){
                     temp.set(0, String.valueOf(varDict.get(temp.get(0))));
                 }
@@ -512,12 +541,11 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
                     case "+":
                     case "-":
                         if (preOp){
-
+                            //warn user they wrong because you shouldn't have duplicate operators e.x. ++ -- /+
                             runOnUiThread(() -> Toast.makeText(CalculatorMenu.this, "Error: Consecutive operators are not allowed.", Toast.LENGTH_LONG).show());
                         }
                             preOp = true;
                             break;
-                            //TODO warn user they wrong because you shouldn't have duplicate operators e.x. ++ -- /+
 
                     default:
                         preOp = false;
@@ -526,7 +554,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
 
 
             }
-            //TODO warn user they wrong because you shouldn't have an open bracket without a close
+            //warn user they wrong because you shouldn't have an open bracket without a close
             if (bracket != 0) {
                 runOnUiThread(() -> Toast.makeText(CalculatorMenu.this, "Mismatched parentheses.", Toast.LENGTH_LONG).show());
             }
