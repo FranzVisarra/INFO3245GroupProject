@@ -26,6 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Objects;
@@ -137,7 +138,7 @@ public class GameMenu extends AppCompatActivity {
                 String receivedEditedName = getIntent().getStringExtra("name");
                 receivedEdited.add(receivedEditedName+"|");
                 receivedEdited.add(getIntent().getStringExtra("base value")+"|");
-                receivedEdited.add(getIntent().getStringExtra("edited value")+"|");
+                receivedEdited.add("|");
                 receivedEdited.add(getIntent().getStringExtra("formula")+"|");
                 tempParent = getIntent().getStringArrayExtra("parent");
                 //clear child associations
@@ -146,13 +147,15 @@ public class GameMenu extends AppCompatActivity {
                     //clear child
                     test[5] = "";
                 }
-                //TODO what if length empty
+                //what if length empty
                 //add parent association to this string from recieved array from file
-                for (int i = 0; i < tempParent.length; i++){
-                    if (i !=0){
-                        tempParentString += tempParent[i]+",";
-                    }else{
-                        tempParentString = tempParent[i];
+                if(Objects.requireNonNull(tempParent).length!=0) {
+                    for (int i = 0; i < tempParent.length; i++) {
+                        if (i != tempParent.length-1) {
+                            tempParentString += tempParent[i] + ",";
+                        } else {
+                            tempParentString += tempParent[i];
+                        }
                     }
                 }
                 //add parent to received list
@@ -200,40 +203,46 @@ public class GameMenu extends AppCompatActivity {
                     }
                 }
                 //set values
-                for (String line: lines){
+                for (int i = 0; i < lines.size(); i++) {
+                    //calculation with formula[3]
+                    String line = lines.get(i);
                     String[] formula = line.split("|");
-                    //todo calculation with formula[3]
+                    formula[2] = StringToList(formula[3]).toString();
+                    lines.set(i, Arrays.toString(formula));
                 }
                 //set file
                 setFiles.start();
             case "create"://when you create a stat
-                //TODO write new stat to file
-                List<String> recieved = new ArrayList<String>();
+                //recieve values from other intent
+                List<String> received = new ArrayList<String>();
                 String receivedName = getIntent().getStringExtra("name");
-                recieved.add(getIntent().getStringExtra("base value")+"|");
-                recieved.add(getIntent().getStringExtra("edited value")+"|");
-                recieved.add(getIntent().getStringExtra("formula")+"|");
+                received.add(receivedName+"|");
+                received.add(getIntent().getStringExtra("base value")+"|");
+                received.add("|");
+                received.add(getIntent().getStringExtra("formula")+"|");
                 tempParent = getIntent().getStringArrayExtra("parent");
                 //clear child associations
                 for(int n = 0; n < lines.size(); n++){
                     String[] test = lines.get(n).split("|");
                     //clear child
-                    test[5] = "";
+                    //test[5] = "";//new so no children
                 }
-                //TODO what if length empty
+                //what if length empty
                 //add parent association to this string from recieved array from file
-                for (int i = 0; i < tempParent.length; i++){
-                    if (i !=0){
-                        tempParentString += tempParent[i]+",";
-                    }else{
-                        tempParentString = tempParent[i];
+                if (Objects.requireNonNull(tempParent).length!=0) {
+                    for (int i = 0; i < tempParent.length; i++) {
+                        if (i != tempParent.length-1) {
+                            tempParentString += tempParent[i] + ",";
+                        } else {
+                            tempParentString += tempParent[i];
+                        }
                     }
                 }
                 //add parent to received list
-                recieved.add(tempParentString+"|");
+                received.add(tempParentString+"|");
                 //add all of it to a string to be done
-                for(String what : recieved){
-                    temp+=recieved;
+                for(String what : received){
+                    temp+=received;
                 }
                 //add all to list
                 lines.add(temp);
@@ -266,9 +275,12 @@ public class GameMenu extends AppCompatActivity {
                     }
                 }
                 //set values
-                for (String line: lines){
+                for (int i = 0; i < lines.size(); i++) {
+                    //calculation with formula[3]
+                    String line = lines.get(i);
                     String[] formula = line.split("|");
-                    //todo calculation with formula[3]
+                    formula[2] = StringToList(formula[3]).toString();
+                    lines.set(i, Arrays.toString(formula));
                 }
                 //set file
                 setFiles.start();
@@ -276,14 +288,23 @@ public class GameMenu extends AppCompatActivity {
         }
     }
 
+    public void onDestroy(){
+        super.onDestroy();
+        //TODO all dialog should die here
+    }
+
     private Runnable GetFiles = new Runnable() {
         @Override
         public void run() {
+            Dictionary<String, Float> emptDict = null;
+            varDict = emptDict;
             root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS+"/StatCalcfiles/"+fileName);
             try(Scanner s = new Scanner(new FileReader(root))) {
                 int i = 0;
                 while(s.hasNext()){
                     lines.add(s.nextLine());
+                    String[] linArr = lines.get(i).split("|");
+                    varDict.put(linArr[0], Float.valueOf(linArr[2]));
                     stats.add(lines.get(i));
                     i++;
                 }
@@ -321,8 +342,43 @@ public class GameMenu extends AppCompatActivity {
             getFiles.start();
         }
     };
-    public List<String> ShortenFormula(List<String> temp,String mode)
-    {
+    public List<String> StringToList(String form){
+        List<String> formList = new ArrayList<>();
+        int position = 0;//start position
+        boolean prevOp=false;
+        for (int i = 0; i < form.length(); i++){
+            String temp = String.valueOf(form.charAt(i));
+            //check for special characters
+            if (temp.equals("[") ||//round up start
+                    temp.equals("]") ||//round up end
+                    temp.equals("{") ||//round down start
+                    temp.equals("}") ||//round down end
+                    temp.equals("(") ||//bracket start
+                    temp.equals(")") ||//bracket end
+                    temp.equals("/") ||//division
+                    temp.equals("*") ||//multiplication
+                    temp.equals("+") ||//addition
+                    temp.equals("-") //subtraction
+            ){
+                //add characters between start position and current index
+                if (i!=0&&!prevOp) {//make sure you do not double book
+                    formList.add(form.substring(position, i));//end is exclusive so it wont add the current index
+                }
+                //add special character that was detected
+                formList.add(String.valueOf(form.charAt(i)));
+                //set position to start from at next index
+                position = i+1;
+                prevOp = true;
+            } else if (i == form.length()-1){//edge case
+                formList.add(form.substring(position,i+1));
+            }else{
+                prevOp=false;
+            }
+            System.out.println(formList);
+        }
+        return formList;
+    }
+    public List<String> ShortenFormula(List<String> temp,String mode){
         System.out.println(temp);
         //remove cursor
         temp.remove("|");

@@ -131,6 +131,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
                 curForm.add("|");
                 break;
         }
+
         statName = getIntent().getStringExtra("this value");
         index = 0;
         variables = findViewById(R.id.variables);
