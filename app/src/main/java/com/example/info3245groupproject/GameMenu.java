@@ -126,9 +126,9 @@ public class GameMenu extends AppCompatActivity {
         mode = getIntent().getStringExtra("mode");
         String[] tempParent;
         String[] tempChild;
-        String tempString = null;
-        String tempParentString = null;
-        String temp = null;
+        String tempString = "null";
+        String tempParentString = "null";
+        String temp = "";
         switch (mode){
             case "none":
                 //Literally nothing. like you came from the main screen

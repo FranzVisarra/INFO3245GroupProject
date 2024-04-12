@@ -160,7 +160,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
         if (id == R.id.Calculate) {
             // TODO check the calculation process
             // Handle the Calculate button: perform calculation
-            String formula = curForm.stream().collect(Collectors.joining());
+            String formula = String.join("|", curForm);
             ParseFormula(formula);
             UI.start();
             //updateDisplay();
