@@ -44,7 +44,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
 
     // All buttons declared
     Button ButtonOne, ButtonTwo, ButtonThree, ButtonFour, ButtonFive, ButtonSix, ButtonSeven, ButtonEight,
-            ButtonNine, ButtonDecimal, ButtonLeft, ButtonRight, ButtonZero, ButtonBracketStart, ButtonBracketEnd,
+            ButtonNine, ButtonDecimal, ButtonLeft, ButtonRight, ButtonCLR, ButtonZero, ButtonBracketStart, ButtonBracketEnd,
             ButtonRoundUpStart, ButtonRoundUpEnd, ButtonRoundDownStart, ButtonRoundDownEnd, ButtonPlus, ButtonMinus,
             ButtonTime, ButtonDivide, ButtonCalcu;
 
@@ -63,6 +63,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
         ButtonDecimal = findViewById(R.id.decimal);
         ButtonLeft = findViewById(R.id.left);
         ButtonRight = findViewById(R.id.right);
+        ButtonCLR = findViewById(R.id.undo);
         ButtonZero = findViewById(R.id.zero);
         ButtonBracketStart = findViewById(R.id.bracketStart);
         ButtonBracketEnd = findViewById(R.id.bracketEnd);
@@ -89,6 +90,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
         ButtonDecimal.setOnClickListener(this);
         ButtonLeft.setOnClickListener(this);
         ButtonRight.setOnClickListener(this);
+        ButtonCLR.setOnClickListener(this);
         ButtonZero.setOnClickListener(this);
         ButtonBracketStart.setOnClickListener(this);
         ButtonBracketEnd.setOnClickListener(this);
