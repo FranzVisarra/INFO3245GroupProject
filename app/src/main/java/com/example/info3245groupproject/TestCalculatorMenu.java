@@ -34,7 +34,7 @@ public class TestCalculatorMenu extends AppCompatActivity {
         testList.add("/");
         testList.add("2");
         System.out.println(testList+"="+ShortenFormula(testList,"search"));
-        String testString = "3+4/2";
+        String testString = "[2/3]+1";
         System.out.println(ShortenFormula(StringToList(testString),"search"));
         testString = "(3+4)/2";
         System.out.println(ShortenFormula(StringToList(testString),"search"));
@@ -58,15 +58,15 @@ public class TestCalculatorMenu extends AppCompatActivity {
                     temp.equals("+") ||//addition
                     temp.equals("-") //subtraction
             ){
-                prevOp = true;
                 //add characters between start position and current index
-                if (i!=0&&prevOp) {//make sure you do not double book
+                if (i!=0&&!prevOp) {//make sure you do not double book
                     formList.add(form.substring(position, i));//end is exclusive so it wont add the current index
                 }
                 //add special character that was detected
                 formList.add(String.valueOf(form.charAt(i)));
                 //set position to start from at next index
                 position = i+1;
+                prevOp = true;
             } else if (i == form.length()-1){//edge case
                 formList.add(form.substring(position,i+1));
             }else{

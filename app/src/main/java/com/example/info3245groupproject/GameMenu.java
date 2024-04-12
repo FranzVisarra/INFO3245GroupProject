@@ -21,15 +21,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
@@ -42,6 +39,7 @@ public class GameMenu extends AppCompatActivity {
     List<String> statValues = new ArrayList<String>();
     public String mode;
     public List<String> lines;//the lines that are in the file
+    public Dictionary<String, Float> varDict;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -323,5 +321,184 @@ public class GameMenu extends AppCompatActivity {
             getFiles.start();
         }
     };
-
+    public List<String> ShortenFormula(List<String> temp,String mode)
+    {
+        System.out.println(temp);
+        //remove cursor
+        temp.remove("|");
+        //initialize the formula that will be handled
+        List<String> formula = new ArrayList<>();
+        float calc;
+        switch (mode){
+            case "search"://check through list
+                //brackets first
+                if (temp.contains("(")||temp.contains("[")||temp.contains("{")) {//this better get an exact match
+                    //set bracket positions
+                    int groupStartPos = 0;
+                    int upStartPos = 0;
+                    int downStartPos = 0;
+                    int endPos;
+                    for (int i = 0; i < temp.size(); i++) {
+                        switch (temp.get(i)) {
+                            case "(":
+                                //always gets last start bracket
+                                groupStartPos = i;
+                                break;
+                            case "[":
+                                //always gets last start bracket
+                                upStartPos = i;
+                                break;
+                            case "{":
+                                //always gets last start bracket
+                                downStartPos = i;
+                                break;
+                        }
+                        switch (temp.get(i)) {
+                            case ")":
+                                //set end position
+                                endPos = i;
+                                //get stuff between brackets
+                                for (int n = groupStartPos + 1; n < i; n++) {
+                                    formula.add(temp.get(n));
+                                }
+                                if (endPos >= groupStartPos) {
+                                    temp.subList(groupStartPos, endPos + 1).clear();
+                                }
+                                //run it back to do stuff between
+                                //add new result
+                                temp.add(groupStartPos, ShortenFormula(formula, "search").get(0));
+                                break;
+                            case "]":
+                                //set end position
+                                endPos = i;
+                                //get stuff between brackets
+                                for (int n = upStartPos + 1; n < i; n++) {
+                                    formula.add(temp.get(n));
+                                }
+                                //remove the brackets and everything inbetween
+                                if (endPos >= upStartPos) {
+                                    temp.subList(upStartPos, endPos + 1).clear();
+                                }
+                                //run it back to do stuff between
+                                //add new result
+                                temp.add(upStartPos, ShortenFormula(formula, "roundUp").get(0));
+                                break;
+                            case "}":
+                                //set end position
+                                endPos = i;
+                                //get stuff between brackets
+                                for (int n = downStartPos + 1; n < i; n++) {
+                                    formula.add(temp.get(n));
+                                }
+                                //remove the brackets and everything inbetween
+                                if (endPos >= downStartPos) {
+                                    temp.subList(downStartPos, endPos + 1).clear();
+                                }
+                                //run it back to do stuff between
+                                //add new result
+                                temp.add(downStartPos, ShortenFormula(formula, "roundDown").get(0));
+                                break;
+                        }
+                    }
+                    //run it again
+                    temp = ShortenFormula(temp, "search");
+                }
+                //math next
+                //division multiplication next
+                else if (temp.contains("/")||temp.contains("*")){
+                    for (int i = 0; i < temp.size(); i++) {
+                        if (temp.get(i).equals("/")||temp.get(i).equals("*")){
+                            //add to temp
+                            for (int n = -1; n < 2; n++){
+                                formula.add(temp.get(i+n));
+                            }
+                            temp.remove(i+1);
+                            temp.remove(i);
+                            temp.remove(i-1);
+                            temp.add(i-1,ShortenFormula(formula,"calculate").get(0));
+                            break;
+                        }
+                    }
+                    //run it again
+                    temp = ShortenFormula(temp, "search");
+                }
+                //addition subtraction next
+                else if (temp.contains("+")||temp.contains("-")){
+                    for (int i = 0; i < temp.size(); i++) {
+                        if (temp.get(i).equals("+")||temp.get(i).equals("-")){
+                            //add to temp
+                            for (int n = -1; n < 2; n++){
+                                formula.add(temp.get(i+n));
+                            }
+                            temp.remove(i+1);
+                            temp.remove(i);
+                            temp.remove(i-1);
+                            temp.add(i-1,ShortenFormula(formula,"calculate").get(0));
+                            break;
+                        }
+                    }
+                }
+                break;
+            case "roundUp":
+                formula.add(ShortenFormula(temp,"search").get(0));
+                if (formula.get(0).matches("\\d+(?:\\.\\d+)?")){
+                    calc = (float) Math.ceil(Double.parseDouble(formula.get(0)));
+                    formula.set(0, String.valueOf(calc));
+                } else {
+                    formula.set(0, "["+formula.get(0)+"]");
+                }
+                return formula;
+            case "roundDown":
+                formula.add(ShortenFormula(temp,"search").get(0));
+                if (formula.get(0).matches("\\d+(?:\\.\\d+)?")){
+                    calc = (float) Math.floor(Double.parseDouble(formula.get(0)));
+                    formula.set(0, String.valueOf(calc));
+                } else {
+                    formula.set(0, "{"+formula.get(0)+"}");
+                }
+                return formula;
+            case "calculate"://this method will always have 3 parts
+                //turn variables into the numbers they represent
+                //so the match method returns true for 2.0 and 0002.0000001 but false if .2 or 2. so fixing THAT
+                if(temp.get(0).charAt(temp.get(0).length()-1)=='.'){
+                    temp.set(0,temp.get(0)+"0");
+                } else if (temp.get(0).charAt(0)=='.'){
+                    //add 0 to end if last character is "."
+                    temp.set(0,"0"+temp.get(0));
+                }
+                if(temp.get(2).charAt(temp.get(2).length()-1)=='.'){
+                    temp.set(0,temp.get(0)+"0");
+                } else if (temp.get(2).charAt(0)=='.'){
+                    //add 0 to end if last character is "."
+                    temp.set(2,"0"+temp.get(2));
+                }
+                if (!temp.get(0).matches("\\d+(?:\\.\\d+)?")){
+                    temp.set(0, String.valueOf(varDict.get(temp.get(0))));
+                }
+                if (!temp.get(2).matches("\\d+(?:\\.\\d+)?")){
+                    temp.set(2, String.valueOf(varDict.get(temp.get(2))));
+                }
+                switch(temp.get(1)){
+                    case "/":
+                        calc = Float.parseFloat(temp.get(0))/Float.parseFloat(temp.get(2));
+                        formula.add(String.valueOf(calc));
+                        return formula;
+                    case "*":
+                        calc = Float.parseFloat(temp.get(0))*Float.parseFloat(temp.get(2));
+                        formula.add(String.valueOf(calc));
+                        return formula;
+                    case "+":
+                        calc = Float.parseFloat(temp.get(0))+Float.parseFloat(temp.get(2));
+                        formula.add(String.valueOf(calc));
+                        return formula;
+                    case "-":
+                        calc = Float.parseFloat(temp.get(0))-Float.parseFloat(temp.get(2));
+                        formula.add(String.valueOf(calc));
+                        return formula;
+                }
+                break;
+        }
+        //nothing found so its in its most simplistic state
+        return temp;
+    }
 }

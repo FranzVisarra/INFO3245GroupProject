@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Intent detailIntent = new Intent(MainActivity.this, GameMenu.class);
                 detailIntent.putExtra("fileName", selectedFromList);
+                detailIntent.putExtra("mode", "none");
                 startActivity(detailIntent);
             }
         });
