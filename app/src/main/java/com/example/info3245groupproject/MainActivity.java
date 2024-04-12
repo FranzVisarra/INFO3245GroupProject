@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy(){
         super.onDestroy();
         dlgAddNew.dismiss();
-
     }
 
     private void handleAddNewFile(Dialog dialog) {

@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/ShowFomula"
+            android:id="@+id/ShowFormula"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Please enter your fomula" />

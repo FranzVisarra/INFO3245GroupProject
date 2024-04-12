@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CalculatorMenu extends AppCompatActivity implements View.OnClickListener {
 
@@ -38,7 +39,8 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
     public String mode;
     public List<String> formList;//this is what is on the screen
     public int index;
-
+    Thread UI;
+    TextView formula;
 
     // All buttons declared
     Button ButtonOne, ButtonTwo, ButtonThree, ButtonFour, ButtonFive, ButtonSix, ButtonSeven, ButtonEight,
@@ -47,6 +49,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
             ButtonTime, ButtonDivide, ButtonCalcu;
 
     private void initViews() {
+        formula = findViewById(R.id.ShowFormula);
         // Initialize each button and set the click listener
         ButtonOne = findViewById(R.id.one);
         ButtonTwo = findViewById(R.id.two);
@@ -113,7 +116,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        UI = new Thread(updateDisplay);
         //get value
         String mode = getIntent().getStringExtra("mode");
         statName = getIntent().getStringExtra("name");
@@ -159,7 +162,8 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
             // Handle the Calculate button: perform calculation
             String formula = curForm.stream().collect(Collectors.joining());
             ParseFormula(formula);
-            updateDisplay();
+            UI.start();
+            //updateDisplay();
         } else if (id == R.id.plus) {
             curForm.add(index,"+");//this ensures that the index marker "|" is moved forward by inserting at previous
             index++;
@@ -257,7 +261,9 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
 
 
         // update the display after modifying curForm
-        updateDisplay();
+
+        UI.start();
+        //updateDisplay();
     }
 
 
@@ -308,14 +314,25 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
         return formList;
     }
 
+    private Runnable updateDisplay = () ->{
+
+        StringBuilder temp = new StringBuilder();
+        for(String huh : curForm){
+            temp.append(huh);
+        }
+        formula.setText((CharSequence) curForm);
+    };
+    /*
     private void updateDisplay() {
-        TextView display = findViewById(R.id.ShowFomula);
+        TextView display = findViewById(R.id.ShowFormula);
         StringBuilder displayText = new StringBuilder();
         for (String s : curForm) {
             displayText.append(s);
         }
         display.setText(displayText.toString());  // Update the TextView to show the current formula
     }
+
+     */
 
     private Runnable CheckInput = new Runnable() {
         @Override
