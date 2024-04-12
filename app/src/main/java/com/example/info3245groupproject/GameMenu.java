@@ -54,6 +54,7 @@ public class GameMenu extends AppCompatActivity {
         });
         fileName = new File(getIntent().getStringExtra("fileName"));
         Dialog dialog = new Dialog(GameMenu.this);
+        //statValues.add("ADD NEW");
         statValues.add("ADD NEW");
         listView = findViewById(R.id.ListView2);
         stats = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,statValues);
@@ -126,8 +127,8 @@ public class GameMenu extends AppCompatActivity {
         mode = getIntent().getStringExtra("mode");
         String[] tempParent;
         String[] tempChild;
-        String tempString = "null";
-        String tempParentString = "null";
+        String tempString = "";
+        String tempParentString = "";
         String temp = "";
         switch (mode){
             case "none":
@@ -306,6 +307,7 @@ public class GameMenu extends AppCompatActivity {
                     String[] linArr = lines.get(i).split("|");
                     varDict.put(linArr[0], Float.valueOf(linArr[2]));
                     stats.add(lines.get(i));
+                    stats.notifyDataSetChanged();
                     i++;
                 }
             }

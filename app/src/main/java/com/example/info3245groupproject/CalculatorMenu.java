@@ -35,7 +35,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
     List<String> listItems = new ArrayList<String>();
     ListView variables;
     ArrayAdapter<String> list;
-    List<String> curForm;//the current formula on the screen, represented as a list
+    List<String> curForm = new ArrayList<String>();//the current formula on the screen, represented as a list
     public String mode;
     public List<String> formList;//this is what is on the screen
     public int index;
@@ -116,13 +116,15 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        UI = new Thread(updateDisplay);
+        //UI = new Thread(updateDisplay);
         //get value
         String mode = getIntent().getStringExtra("mode");
         statName = getIntent().getStringExtra("name");
         //TODO move to onstart method
         switch (mode){
             case "add":
+                curForm.add("|");
+                index = curForm.size()-1;
                 break;
             case "edit":
                 baseValue = Float.parseFloat(getIntent().getStringExtra("base value"));
@@ -130,8 +132,8 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
                 String[] tempChild = getIntent().getStringArrayExtra("child");
                 child = Arrays.asList(tempChild);
                 curForm = StringToList(tempForm);
-                index = curForm.size()-1;
                 curForm.add("|");
+                index = curForm.size()-1;
                 break;
         }
 
@@ -150,7 +152,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
 
             }
         });
-
+        //UI.start();
     }
 
     @Override
@@ -162,7 +164,7 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
             // Handle the Calculate button: perform calculation
             String formula = String.join("|", curForm);
             ParseFormula(formula);
-            UI.start();
+            //UI.start();
             //updateDisplay();
         } else if (id == R.id.plus) {
             curForm.add(index,"+");//this ensures that the index marker "|" is moved forward by inserting at previous
@@ -197,15 +199,14 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
         } else if (id == R.id.left) {
             if (index > 0) {
                 curForm.remove("|");
-                index++;
+                index--;
                 curForm.add(index, "|");
             }
         } else if (id == R.id.right) {
             if (index < curForm.size()-1){
                 curForm.remove("|");
-                index--;
+                index++;
                 curForm.add(index,"|");
-                curForm.add(">");
             }
         } else if (id == R.id.undo){
             if (index > 0){
@@ -262,8 +263,8 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
 
         // update the display after modifying curForm
 
-        UI.start();
-        //updateDisplay();
+        //UI.start();
+        updateDisplay();
     }
 
 
@@ -314,13 +315,18 @@ public class CalculatorMenu extends AppCompatActivity implements View.OnClickLis
         return formList;
     }
 
-    private Runnable updateDisplay = () ->{
+    public void updateDisplay (){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run () {
+                StringBuilder temp = new StringBuilder();
+                for (String huh : curForm) {
+                    temp.append(huh);
+                }
+                formula.setText(temp);
 
-        StringBuilder temp = new StringBuilder();
-        for(String huh : curForm){
-            temp.append(huh);
-        }
-        formula.setText((CharSequence) curForm);
+            }
+        });
     };
     /*
     private void updateDisplay() {

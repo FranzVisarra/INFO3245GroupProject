@@ -28,6 +28,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    //List<String> statValues = new ArrayList<>();//this has to be fused into one of the other lists. dont know which one tho
     List<String> listItems = new ArrayList<>();
     ListView files;
     ArrayAdapter<String> list;
